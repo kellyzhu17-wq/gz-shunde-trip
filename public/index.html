@@ -88,3 +88,137 @@
 </script>
 </body>
 </html>
+
+⚠️ 提醒：脚本中的 diff <= 0 替换后变成 diff <= 0，是正确的，不用改。
+
+等你有机票/高铁的具体时间，发给我就更新行程部分。
+
+code里面没有了行程总揽，没有机票了我还需要每个地方的一键导航哪些最开始都有的功能
+
+
+
+
+Thought for 0s
+The user is right that I dropped the overview section, flight info, and per-location quick navigation links from my earlier revision. I need to restore the full code with all those features reinstated.
+
+明白了！我把之前的功能全部补回来：行程总览表、航班/高铁信息卡、每个地点的一键高德导航。完整替换 public/index.html（记得批量替换 <→<、>→>）：
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>顺德吃货团 · 4 天 3 晚</title>
+<style>
+
+{ margin: 0; padding: 0; box-sizing: border-box; } body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #faf6f0; color: #333; line-height: 1.7; } .wrap { max-width: 680px; margin: 0 auto; padding: 16px; } header { text-align: center; padding: 28px 0 12px; } header h1 { font-size: 26px; color: #b5462a; } header p { color: #888; font-size: 14px; margin-top: 6px; } .countdown { background: #b5462a; color: #fff; border-radius: 14px; text-align: center; padding: 18px; margin: 16px 0; } .countdown .num { font-size: 34px; font-weight: bold; } .card { background: #fff; border-radius: 14px; padding: 18px; margin: 14px 0; box-shadow: 0 2px 8px rgba(0,0,0,.06); } .card h2 { font-size: 18px; color: #b5462a; margin-bottom: 8px; } .tag { display: inline-block; background: #f3e2d5; color: #8a4b2f; border-radius: 6px; font-size: 12px; padding: 2px 8px; margin: 2px 4px 2px 0; } ul { padding-left: 20px; } li { margin: 6px 0; } a { color: #b5462a; } .nav-btn { display: inline-block; background: #2e7d5b; color: #fff; text-decoration: none; font-size: 12px; border-radius: 6px; padding: 2px 10px; margin-left: 6px; white-space: nowrap; } table { width: 100%; border-collapse: collapse; font-size: 14px; } th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid #eee; } th { color: #b5462a; } .flight { background: #fdf1e7; border-radius: 10px; padding: 10px 14px; margin: 8px 0; font-size: 14px; } .todo li { list-style: "☐ "; } footer { text-align: center; color: #aaa; font-size: 12px; padding: 20px 0; } </style> </head> <body> <div class="wrap"> <header> <h1>🥢 顺德吃货团 · 4 天 3 晚</h1> <p>2026.11.06 – 11.09 · 广州 & 顺德 · 4 人成行</p> </header>
+<div class="countdown">
+  <div>距离出发还有</div>
+  <div class="num" id="cd">--</div>
+</div>
+
+<div class="card">
+  <h2>📋 行程总览</h2>
+  <table>
+    <tr><th>日期</th><th>主题</th><th>重点</th></tr>
+    <tr><td>11/6 五</td><td>抵达会合</td><td>广州小逛 → 大良夜宵</td></tr>
+    <tr><td>11/7 六</td><td>大良老城</td><td>早茶 · 清晖园 · 桑拿鱼</td></tr>
+    <tr><td>11/8 日</td><td>水乡均安</td><td>逢简水乡 · 均安蒸猪</td></tr>
+    <tr><td>11/9 一</td><td>早茶返程</td><td>陈村早茶 · 手信 · 送机</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h2>✈️ 交通信息</h2>
+  <div class="flight">🛫 上海 → 广州 · 11/6 早班机 · <b>待补航班号</b></div>
+  <div class="flight">🚄 香港 → 广州南 · 11/6 晚间 · <b>待补车次</b></div>
+  <div class="flight">🛫 回程 · 11/9 18:50 · <b>CZ351</b> 广州白云 → 新加坡（2 人）</div>
+  <div class="flight">🚄 香港回程 · 11/9 · <b>待补车次</b></div>
+</div>
+
+<div class="card">
+  <h2>🏨 住宿</h2>
+  <p>佛山顺德清晖园亚朵酒店 × 3 晚（11/6–11/9）
+  <a class="nav-btn" href="https://uri.amap.com/search?keyword=顺德清晖园亚朵酒店">📍 导航</a></p>
+</div>
+
+<div class="card">
+  <h2>Day 1 · 11/6 周五 · 抵达会合</h2>
+  <ul>
+    <li>上海二人早班机抵广州，市区小逛
+      <a class="nav-btn" href="https://uri.amap.com/search?keyword=广州白云国际机场">📍 白云机场</a></li>
+    <li>香港二人晚间高铁抵穗 → 顺德大良
+      <a class="nav-btn" href="https://uri.amap.com/search?keyword=广州南站">📍 广州南站</a></li>
+    <li>夜宵四人会合：毋米粥 / 牛乳糖水
+      <a class="nav-btn" href="https://uri.amap.com/search?keyword=顺德大良华盖路步行街">📍 华盖路</a></li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>Day 2 · 11/7 周六 · 大良老城吃逛</h2>
+  <ul>
+    <li>早茶：华盖路老字号
+      <a class="nav-btn" href="https://uri.amap.com/search?keyword=顺德大良华盖路步行街">📍 导航</a></li>
+    <li>上午：清晖园（提前预约门票）
+      <a class="nav-btn" href="https://uri.amap.com/search?keyword=顺德清晖园">📍 导航</a></li>
+    <li>午晚餐：炒牛奶、桑拿鱼（需订位）、双皮奶
+      <a class="nav-btn" href="https://uri.amap.com/search?keyword=顺德民信老铺">📍 双皮奶</a></li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>Day 3 · 11/8 周日 · 逢简水乡 + 均安</h2>
+  <ul>
+    <li>上午：逢简水乡摇橹船、祠堂
+      <a class="nav-btn" href="https://uri.amap.com/search?keyword=顺德逢简水乡">📍 导航</a></li>
+    <li>午餐：均安蒸猪（提前预订）、鱼饼
+      <a class="nav-btn" href="https://uri.amap.com/search?keyword=顺德均安镇">📍 导航</a></li>
+    <li>晚上回大良夜宵收尾</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>Day 4 · 11/9 周一 · 陈村早茶 & 返程</h2>
+  <ul>
+    <li>陈村早茶 + 采购手信（鱼皮角、伦教糕）
+      <a class="nav-btn" href="https://uri.amap.com/search?keyword=顺德陈村镇">📍 导航</a></li>
+    <li>下午前往白云机场
+      <a class="nav-btn" href="https://uri.amap.com/search?keyword=广州白云国际机场">📍 导航</a></li>
+    <li>18:50 CZ351 广州 → 新加坡（2 人）</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>✅ 待办清单</h2>
+  <ul class="todo">
+    <li>上海 ⇋ 广州 机票</li>
+    <li>香港 ⇋ 广州南 高铁票</li>
+    <li>清晖园门票预约</li>
+    <li>桑拿鱼餐厅订位</li>
+    <li>均安蒸猪提前预订</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>🍽 必吃打卡清单</h2>
+  <span class="tag">双皮奶</span><span class="tag">炒牛奶</span><span class="tag">桑拿鱼</span><span class="tag">均安蒸猪</span><span class="tag">鱼饼</span><span class="tag">毋米粥</span><span class="tag">陈村粉</span><span class="tag">伦教糕</span>
+</div>
+
+<footer>顺德吃货团 · 手册会自动更新 · 出发愉快 🎉</footer>
+</div>
+
+<script>
+  const target = new Date("2026-11-06T08:00:00+08:00");
+  function tick() {
+    const diff = target - new Date();
+    if (diff <= 0) { document.getElementById("cd").textContent = "出发啦！🎉"; return; }
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor(diff % 86400000 / 3600000);
+    const m = Math.floor(diff % 3600000 / 60000);
+    document.getElementById("cd").textContent = d + " 天 " + h + " 小时 " + m + " 分";
+  }
+  tick();
+  setInterval(tick, 30000);
+</script>
+</body>
+</html>
