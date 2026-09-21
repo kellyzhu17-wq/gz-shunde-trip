@@ -156,7 +156,8 @@
     margin: 6px 0;
     background: #fafafa;
     border-radius: var(--radius-md);
-    font-size: 14px;
+    font-size: 13px;
+    line-height: 1.5;
   }
 
   .interactive-list { list-style: none; padding: 0; margin-bottom: 12px; }
@@ -233,20 +234,6 @@
     white-space: nowrap;
   }
 
-  .flight-list { display: flex; flex-direction: column; gap: 8px; }
-  .flight {
-    background: #fdf6f0;
-    border-radius: var(--radius-md);
-    padding: 10px 14px;
-    font-size: 13px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .flight-info-group { display: flex; flex-direction: column; gap: 2px; flex: 1; }
-  .flight-desc { font-weight: 600; color: var(--text-main); }
-  .flight-code { font-weight: 700; color: var(--primary); font-size: 13px; }
-
   .xhs-list { list-style: none; padding: 0; }
   .xhs-item {
     display: flex;
@@ -295,7 +282,7 @@
 </div>
 
 <div class="member-selector">
-  <div class="member-selector-title">👤 当前操作人 (用于个人备注签名):</div>
+  <div class="member-selector-title">👤 当前操作人 (用于个人私密备注签名):</div>
   <div class="avatar-group" id="avatar-group"></div>
 </div>
 
@@ -328,7 +315,7 @@
 </div>
 
 <div class="card">
-  <h2>📋 行程总览速查</h2>
+  <h2>🔗 四天行程总览</h2>
   <table>
     <thead>
       <tr><th>日期</th><th>主题</th><th>重点安排</th></tr>
@@ -338,35 +325,30 @@
 </div>
 
 <div class="card">
-  <h2>✈️ 交通信息与时间安排</h2>
-  <div class="flight-list" id="flight-list-container"></div>
-</div>
-
-<div class="card">
-  <h2>🏨 住宿</h2>
-  <p style="font-size: 14px;">佛山顺德清晖园亚朵酒店 × 3 晚（11/6–11/9）
+  <h2>🏨 住宿安排</h2>
+  <p style="font-size: 14px;"><b>亚朵清晖园店</b>：钟楼 A/E 口步行 5–8 分钟｜清晖路 156 号
   <a class="nav-btn" onclick="openAmap('顺德清晖园亚朵酒店')">📍 导航</a></p>
 </div>
 
-<!-- Day 1 ~ Day 4 (纯查阅与一键导航) -->
+<!-- Day 0 ~ Day 3 详细内容 -->
 <div class="card">
-  <h2>Day 1 · 11/6 周五 · 抵达会合</h2>
+  <h2>📅 Day 0｜11:00 抵广州・西关寻味 → 夜赴顺德・轻宵夜</h2>
+  <ul class="standard-list" id="list-day0"></ul>
+</div>
+
+<div class="card">
+  <h2>📅 Day 1｜老城清和・园林湖光</h2>
   <ul class="standard-list" id="list-day1"></ul>
 </div>
 
 <div class="card">
-  <h2>Day 2 · 11/7 周六 · 大良老城吃逛</h2>
+  <h2>📅 Day 2｜水乡静摇・江岸放空</h2>
   <ul class="standard-list" id="list-day2"></ul>
 </div>
 
 <div class="card">
-  <h2>Day 3 · 11/8 周日 · 逢简水乡 + 均安</h2>
+  <h2>📅 Day 3｜轻游收尾・稳赶晚班机 ✈️</h2>
   <ul class="standard-list" id="list-day3"></ul>
-</div>
-
-<div class="card">
-  <h2>Day 4 · 11/9 周一 · 陈村早茶 & 返程</h2>
-  <ul class="standard-list" id="list-day4"></ul>
 </div>
 
 <div class="card">
@@ -468,39 +450,48 @@
     });
   }
 
-  // 固定的主行程（直接在这里查阅，统一在 GitHub 修改）
-  const fixedMasterSchedule = {
-    daySchedules: {
-      day1: [
-        "上海二人早班机抵广州，市区小逛 [广州白云国际机场]",
-        "香港二人晚间高铁抵穗 → 顺德大良 [广州南站]",
-        "夜宵四人会合：毋米粥 / 牛乳糖水 [顺德大良华盖路步行街]"
-      ],
-      day2: [
-        "早茶：华盖路老字号 [顺德大良华盖路步行街]",
-        "上午：清晖园（提前预约门票） [顺德清晖园]",
-        "午晚餐：炒牛奶、桑拿鱼（需订位）、双皮奶 [顺德民信老铺]"
-      ],
-      day3: [
-        "上午：逢简水乡摇橹船、祠堂 [顺德逢简水乡]",
-        "午餐：均安蒸猪（提前预订）、鱼饼 [顺德均安镇]",
-        "晚上回大良夜宵收尾"
-      ],
-      day4: [
-        "陈村早茶 + 采购手信（鱼皮角、伦教糕） [顺德陈村镇]",
-        "下午前往白云机场 [广州白云国际机场]",
-        "18:50 CZ351 广州 → 新加坡（2人） & 广州 → 上海（2人）"
-      ]
-    },
-    transports: [
-      { route: "🛫 上海 ⇋ 广州（2人 · 11/6 去程）", detail: "待补航班号 (时间待定)" },
-      { route: "🚄 香港 ⇋ 广州南（2人 · 11/6 去程）", detail: "待补车次 (时间待定)" },
-      { route: "🛫 广州 → 新加坡（2人 · 11/9 回程）", detail: "CZ351 (18:50 起飞)" },
-      { route: "🛫 广州 → 上海（2人 · 11/9 回程）", detail: "待补航班号 (时间待定)" }
+  // 固定的详细行程（由你在 GitHub 统一维护更新）
+  const detailedSchedules = {
+    overview: [
+      { day: "Day 0", theme: "广州西关逛吃→正餐→夜赴顺德→轻宵夜", highlight: "西关寻味・夜赴顺德" },
+      { day: "Day 1", theme: "清晖园→毋米粥→顺峰山→大门公", highlight: "清晖园・园林湖光" },
+      { day: "Day 2", theme: "逢简水乡→小众江岸→黄但记", highlight: "逢简水乡・江岸放空" },
+      { day: "Day 3", theme: "鹭岛/碧江金楼→15:00出发→白云机场18:00起飞 ✈️", highlight: "轻游收尾・稳赶晚班机" }
+    ],
+    day0: [
+      "✈️ 11:00 抵达广州：出站 → 地铁 1 号线 → 陈家祠站 D 口，约 30–40 分钟",
+      "🕐 11:45–13:00 陈家祠：导航 [广东民间工艺博物馆]｜门票 ¥10｜慢逛 1 小时，看岭南建筑木雕/砖雕/灰塑精华",
+      "🕐 13:00–14:30 永庆坊·轻食垫胃：逛恩宁路骑楼、粤剧艺术博物馆、荔枝湾涌；吃 [银记肠粉] 或 [吴财记净云吞]",
+      "🕐 14:30–17:30 沙面岛 → 沿江西路：慢逛欧风建筑，下午茶品尝 [百花甜品] 凤凰奶糊 / [顺记冰室] 椰子雪糕",
+      "🍽️ 17:30–19:00 广州正餐晚餐：导航 [陶陶居（第十甫路总店）]｜清淡必点虾饺皇、白切鸡、老火例汤、清蒸鱼",
+      "🚇 19:00 出发顺德：首选黄沙→1号线→广州南站→7号线→北滘公园→3号线→大良钟楼站 (50–60分钟)",
+      "🌙 20:30–21:30 顺德轻宵夜：选 1 样即可，[民信老铺] 双皮奶 / [欢记牛乳] 水牛奶 / [细妹牛杂]"
+    ],
+    day1: [
+      "🕐 8:45–11:00 清晖园：酒店步行 5–8 分钟｜导航 [清晖园博物馆]｜门票 ¥15｜9点前到避团队，慢逛 2 小时",
+      "🕐 11:00–12:00 华盖路小食：品尝 [民信老铺] 原味双皮奶、[欢姐伦教糕]",
+      "🍽️ 12:00–13:30 午餐·粥水温润：打车 5 分钟至 [大良毋米粥（锦龙路总店）]｜必点粥水锅底、鲩鱼、本地贝类",
+      "🕐 14:30–17:30 顺峰山公园：导航 [桂畔海碧道入口]｜免费｜慢行 3 小时，桂畔海绿道、大牌坊、青云湖放空",
+      "🍽️ 18:00–19:30 晚餐·清鲜家常：打车 8 分钟至 [凤城·大门公饭店]｜必点八宝冬瓜盅、顺德拆鱼羹、白灼河虾",
+      "🕐 19:30–20:30 金榜慢逛：金榜上街散步，喝杯鲜水牛奶即回亚朵酒店"
+    ],
+    day2: [
+      "🕐 9:00–12:00 逢简水乡：打车 25–30 分钟至 [逢简水乡游客中心]｜先坐手摇乌篷船 (约1.5小时)，后慢逛古桥老祠堂",
+      "🍽️ 12:00–13:30 午餐·水乡本味：村内 [水乡人家私房菜]｜必点清蒸鲩鱼、顺德鱼饼、传统陈村粉、上汤菜心",
+      "🕐 14:30–17:00 小众静地二选一：[乌洲水闸滨水碧道] (江景大草坪野餐) 或 [青田村] (400年古村几乎无商业化)",
+      "🍽️ 17:30–19:00 晚餐·清爽收尾：打车 20 分钟回大良 [黄但记（陈村粉总店）]｜必点鸡油花雕浸陈村粉、白切鸡",
+      "🕐 19:00–20:00 手信采购：华盖路购买民信双皮奶礼盒、伦教糕、陈村粉等清淡伴手礼"
+    ],
+    day3: [
+      "⏰ 铁律：14:00 回酒店取行李 → 15:00 准时出发去机场 ｜ 18:00 广州起飞 ✈️",
+      "🕐 9:00–11:30 生态慢游二选一：[鹭岛生态公园（陈村）] (落羽杉林观鸟) 或 [碧江金楼 + 古村] (明清金楼清幽)",
+      "🍽️ 12:00–13:00 就近清淡午餐：公园附近简餐或 [苏记云吞（碧江）] 鲜爽云吞",
+      "🕐 13:30–14:00 返程取行李：打车回亚朵清晖园店，整理行李不卡点",
+      "🚗 15:00 出发白云机场：首选直达高速约 70–90 分钟 (16:30 前到)；备选东乐路机场大巴或城际换乘"
     ]
   };
 
-  // 用户的 Local 本地私密数据（Amendment / 待办 / 美食 / 小红书收藏）
+  // 用户的 Local 本地私密数据
   const defaultLocalState = {
     todos: [
       { text: "上海 ⇋ 广州 机票 (2人)", done: false, author: members[0] },
@@ -516,74 +507,47 @@
     xhsLinks: []
   };
 
-  let localState = JSON.parse(localStorage.getItem("shunde_trip_local_v24")) || defaultLocalState;
+  let localState = JSON.parse(localStorage.getItem("shunde_trip_local_v25")) || defaultLocalState;
 
   function saveLocalState() {
-    localStorage.setItem("shunde_trip_local_v24", JSON.stringify(localState));
+    localStorage.setItem("shunde_trip_local_v25", JSON.stringify(localState));
   }
 
   function renderAll() {
-    renderFixedSchedules();
-    renderTransports();
+    renderOverviewTable();
+    renderDetailedDays();
     renderTodos();
     renderFoods();
     renderXhs();
   }
 
-  function renderFixedSchedules() {
-    const dayMeta = [
-      { key: 'day1', date: '11/6 五', title: '抵达会合' },
-      { key: 'day2', date: '11/7 六', title: '大良老城' },
-      { key: 'day3', date: '11/8 日', title: '水乡均安' },
-      { key: 'day4', date: '11/9 一', title: '早茶返程' }
-    ];
-
+  function renderOverviewTable() {
     const tbody = document.getElementById("overview-tbody");
     tbody.innerHTML = "";
-
-    dayMeta.forEach(meta => {
-      const day = meta.key;
-      const list = document.getElementById(`list-${day}`);
-      list.innerHTML = "";
-
-      let dayHighlights = [];
-      const currentDayItems = fixedMasterSchedule.daySchedules[day] || [];
-
-      currentDayItems.forEach(itemText => {
-        let cleanText = itemText.replace(/\[.*?\]/g, "").trim();
-        if (cleanText) dayHighlights.push(cleanText);
-
-        const li = document.createElement("li");
-        let formattedText = itemText.replace(/\[(.*?)\]/g, (match, p1) => {
-          return `<a class="nav-btn" onclick="openAmap('${p1}')">📍 ${p1}</a>`;
-        });
-        li.innerHTML = `<span>• ${formattedText}</span>`;
-        list.appendChild(li);
-      });
-
+    detailedSchedules.overview.forEach(item => {
       const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td style="white-space:nowrap;">${meta.date}</td>
-        <td style="font-weight:bold; white-space:nowrap;">${meta.title}</td>
-        <td>${dayHighlights.join(" · ") || "暂无安排"}</td>
+        <td style="font-weight:bold; white-space:nowrap;">${item.day}</td>
+        <td style="white-space:nowrap;">${item.highlight}</td>
+        <td>${item.theme}</td>
       `;
       tbody.appendChild(tr);
     });
   }
 
-  function renderTransports() {
-    const container = document.getElementById("flight-list-container");
-    container.innerHTML = "";
-    fixedMasterSchedule.transports.forEach(item => {
-      const div = document.createElement("div");
-      div.className = "flight";
-      div.innerHTML = `
-        <div class="flight-info-group">
-          <span class="flight-desc">${item.route}</span>
-          <span class="flight-code">${item.detail}</span>
-        </div>
-      `;
-      container.appendChild(div);
+  function renderDetailedDays() {
+    ['day0', 'day1', 'day2', 'day3'].forEach(dayKey => {
+      const listEl = document.getElementById(`list-${dayKey}`);
+      listEl.innerHTML = "";
+      (detailedSchedules[dayKey] || []).forEach(itemText => {
+        const li = document.createElement("li");
+        // 自动将中括号或特定名字加上高德导航链接
+        let formattedText = itemText.replace(/\[(.*?)\]/g, (match, p1) => {
+          return `<a class="nav-btn" onclick="openAmap('${p1}')">📍 ${p1}</a>`;
+        });
+        li.innerHTML = `• ${formattedText}`;
+        listEl.appendChild(li);
+      });
     });
   }
 
