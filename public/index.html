@@ -35,22 +35,6 @@
   header h1 { font-size: 24px; font-weight: 700; color: var(--primary); letter-spacing: -0.5px; }
   header p { color: var(--text-muted); font-size: 13px; margin-top: 4px; }
 
-  /* 协同状态提示条 */
-  .sync-bar {
-    background: #e8f5e9;
-    color: #2e7d32;
-    font-size: 12px;
-    padding: 6px 12px;
-    border-radius: 20px;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    margin-bottom: 12px;
-    font-weight: 600;
-    cursor: pointer;
-  }
-  .sync-dot { width: 8px; height: 8px; background: #4caf50; border-radius: 50%; display: inline-block; }
-
   /* 倒计时 */
   .countdown {
     background: linear-gradient(135deg, #ff7043, #d84315);
@@ -127,7 +111,7 @@
   }
   .btn-action:hover { background: #ffccbc; }
 
-  /* 微信群同步工具条卡片 */
+  /* 微信群口令同步卡片 */
   .share-sync-box {
     background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
     border: 1px solid #a5d6a7;
@@ -137,14 +121,25 @@
     text-align: center;
   }
   .share-sync-box h3 { font-size: 15px; color: #1b5e20; margin-bottom: 6px; }
-  .share-sync-box p { font-size: 12px; color: #388e3c; margin-bottom: 10px; line-height: 1.4; }
+  .share-sync-box p { font-size: 12px; color: #388e3c; margin-bottom: 12px; line-height: 1.4; }
+  .btn-group-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
   .btn-share {
     background: #2e7d32;
     color: #fff;
     border: none;
     padding: 8px 16px;
     border-radius: 20px;
-    font-size: 13px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .btn-import {
+    background: #fff;
+    color: #2e7d32;
+    border: 1px solid #2e7d32;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 12px;
     font-weight: 700;
     cursor: pointer;
   }
@@ -378,19 +373,16 @@
 <header>
   <h1>🥢 顺德吃货团 · 4 天 3 晚</h1>
   <p>2026.11.06 – 11.09 · 广州 & 顺德 · Kelly / Fred / Shirley / Wentian</p>
-  <div style="text-align: center; margin-top: 8px;">
-    <span class="sync-bar">
-      <span class="sync-dot"></span> 
-      <span>多人共享链接同步模式已就绪</span>
-    </span>
-  </div>
 </header>
 
-<!-- 微信群一键分享与同步卡片 -->
+<!-- 微信群口令同步卡片 -->
 <div class="share-sync-box">
-  <h3>🔗 微信群实时同步指南</h3>
-  <p>由于浏览器安全限制，任何人修改后，只需点击下方按钮复制带最新数据的专属链接发到群里，大家点开就能看到彼此的修改！</p>
-  <button class="btn-share" onclick="copyShareLink()">📋 复制当前带最新修改的专属链接</button>
+  <h3>💬 微信群口令同步面板</h3>
+  <p>修改内容后，点击生成短口令发到群里；同伴复制口令点击“导入”即可同步！</p>
+  <div class="btn-group-row">
+    <button class="btn-share" onclick="copySyncToken()">📋 生成并复制同步口令</button>
+    <button class="btn-import" onclick="importSyncToken()">📥 粘贴导入同伴口令</button>
+  </div>
 </div>
 
 <div class="countdown">
@@ -657,41 +649,67 @@
     feedbacks: { day1: [], day2: [], day3: [], day4: [] }
   };
 
-  // 🌐 核心：从 URL 的 `#data=` 参数中解析最新协同数据，没有则读本地或默认值
   function loadState() {
     try {
       const hash = window.location.hash;
-      if (hash && hash.startsWith("#data=")) {
-        const jsonStr = decodeURIComponent(hash.replace("#data=", ""));
+      if (hash && hash.startsWith("#t=")) {
+        const base64Str = hash.replace("#t=", "");
+        const jsonStr = decodeURIComponent(escape(atob(base64Str)));
         const parsed = JSON.parse(jsonStr);
         if (parsed && parsed.daySchedules) return parsed;
       }
-    } catch (e) {
-      console.log("解析分享链接数据失败，使用默认状态");
-    }
-    return JSON.parse(localStorage.getItem("shunde_trip_master_v11")) || defaultGlobalState;
+    } catch (e) {}
+    return JSON.parse(localStorage.getItem("shunde_trip_master_v13")) || defaultGlobalState;
   }
 
   let globalState = loadState();
   let dayEditingState = { day1: false, day2: false, day3: false, day4: false };
 
-  // 🌐 核心：每次修改自动写入本地及更新 URL Hash 状态
   function syncState() {
-    localStorage.setItem("shunde_trip_master_v11", JSON.stringify(globalState));
+    localStorage.setItem("shunde_trip_master_v13", JSON.stringify(globalState));
     try {
-      const jsonStr = encodeURIComponent(JSON.stringify(globalState));
-      history.replaceState(null, "", "#data=" + jsonStr);
+      const jsonStr = JSON.stringify(globalState);
+      const base64Str = btoa(unescape(encodeURIComponent(jsonStr)));
+      history.replaceState(null, "", "#t=" + base64Str);
     } catch (e) {}
   }
 
-  function copyShareLink() {
+  function copySyncToken() {
     syncState();
-    const currentUrl = window.location.href;
-    navigator.clipboard.writeText(currentUrl).then(() => {
-      alert("✅ 专属协同链接已复制成功！\n\n请直接发到微信群里，其他人点开这个链接，即可完美同步你刚刚修改的所有内容！");
-    }).catch(() => {
-      prompt("请手动复制下方链接发给同伴：", currentUrl);
-    });
+    try {
+      const jsonStr = JSON.stringify(globalState);
+      const token = "【顺德吃货团口令:" + btoa(unescape(encodeURIComponent(jsonStr))) + "】";
+      navigator.clipboard.writeText(token).then(() => {
+        alert("✅ 同步口令已复制成功！\n\n直接发到微信群里即可。其他人复制这段口令后点下方的“粘贴导入同伴口令”就能瞬间同步！");
+      });
+    } catch (e) {
+      alert("生成口令失败");
+    }
+  }
+
+  function importSyncToken() {
+    const inputToken = prompt("请粘贴同伴发在微信群里的完整同步口令（包含【】括号）：");
+    if (!inputToken) return;
+    try {
+      let cleanToken = inputToken.trim();
+      const startIdx = cleanToken.indexOf(":");
+      const endIdx = cleanToken.lastIndexOf("】");
+      if (startIdx !== -1 && endIdx !== -1) {
+        cleanToken = cleanToken.substring(startIdx + 1, endIdx);
+      }
+      const jsonStr = decodeURIComponent(escape(atob(cleanToken)));
+      const parsed = JSON.parse(jsonStr);
+      if (parsed && parsed.daySchedules) {
+        globalState = parsed;
+        syncState();
+        renderAll();
+        alert("🎉 成功导入同伴的最新修改，数据已全部更新！");
+      } else {
+        alert("口令格式不正确，请检查！");
+      }
+    } catch (e) {
+      alert("解析口令失败，请确保复制完整！");
+    }
   }
 
   function renderAll() {
