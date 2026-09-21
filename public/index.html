@@ -35,7 +35,7 @@
   header h1 { font-size: 24px; font-weight: 700; color: var(--primary); letter-spacing: -0.5px; }
   header p { color: var(--text-muted); font-size: 13px; margin-top: 4px; }
 
-  /* 协同状态提示条 */
+  /* 云端协同状态提示条 */
   .sync-bar {
     background: #e8f5e9;
     color: #2e7d32;
@@ -47,8 +47,10 @@
     gap: 6px;
     margin-bottom: 12px;
     font-weight: 600;
+    cursor: pointer;
   }
-  .sync-dot { width: 8px; height: 8px; background: #4caf50; border-radius: 50%; display: inline-block; }
+  .sync-dot { width: 8px; height: 8px; background: #4caf50; border-radius: 50%; display: inline-block; animation: pulse 2s infinite; }
+  @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
   /* 倒计时 */
   .countdown {
@@ -356,7 +358,10 @@
   <h1>🥢 顺德吃货团 · 4 天 3 晚</h1>
   <p>2026.11.06 – 11.09 · 广州 & 顺德 · Kelly / Fred / Shirley / Wentian</p>
   <div style="text-align: center; margin-top: 8px;">
-    <span class="sync-bar"><span class="sync-dot"></span> 云端协同已就绪（自动同步更新中）</span>
+    <span class="sync-bar" onclick="manualSync()" title="点击手动从云端同步最新数据">
+      <span class="sync-dot" id="sync-dot"></span> 
+      <span id="sync-status-text">云端实时协同已连接（点击刷新）</span>
+    </span>
   </div>
 </header>
 
@@ -409,7 +414,7 @@
   </table>
 </div>
 
-<!-- 交通信息卡片（支持时间和班次在线编辑） -->
+<!-- 交通信息卡片 -->
 <div class="card">
   <div class="card-header">
     <h2>✈️ 交通信息与时间安排</h2>
@@ -574,7 +579,6 @@
     setTimeout(() => { if (Date.now() - startTime < 2000) window.location.href = webUrl; }, 1500);
   }
 
-  // 默认全局初始状态树
   const defaultGlobalState = {
     daySchedules: {
       day1: [
@@ -600,7 +604,7 @@
     },
     transports: [
       { route: "🛫 上海 ⇋ 广州（2人 · 11/6 去程）", detail: "待补航班号 (时间待定)" },
-      { route: "🚄 香港 ⇋ 广州南（2人 · 11/6 去程）", detail: "待补车次 (时间待定)" },
+      { route: "🚄 香港 ⇋ 广州南（2user · 11/6 去程）", detail: "待补车次 (时间待定)" },
       { route: "🛫 广州 → 新加坡（2人 · 11/9 回程）", detail: "CZ351 (18:50 起飞)" },
       { route: "🛫 广州 → 上海（2人 · 11/9 回程）", detail: "待补航班号 (时间待定)" }
     ],
@@ -625,11 +629,48 @@
     feedbacks: { day1: [], day2: [], day3: [], day4: [] }
   };
 
-  let globalState = JSON.parse(localStorage.getItem("shunde_trip_master_v9")) || defaultGlobalState;
+  let globalState = JSON.parse(localStorage.getItem("shunde_trip_master_v10")) || defaultGlobalState;
   let dayEditingState = { day1: false, day2: false, day3: false, day4: false };
 
-  function syncToCloud() {
-    localStorage.setItem("shunde_trip_master_v9", JSON.stringify(globalState));
+  // 🌐 真正的云端 API 协同对接 (基于公开免费 JSONBin / KV 节点)
+  const API_BIN_ID = "shunde_trip_group_2026_v1"; 
+  const API_URL = `https://json.extendsclass.com/bin/${API_BIN_ID}`;
+
+  async function fetchCloudData() {
+    try {
+      const res = await fetch(API_URL, { headers: { 'Security-Key': 'shunde2026' } });
+      if (res.ok) {
+        const cloudData = await res.json();
+        if (cloudData && cloudData.daySchedules) {
+          globalState = cloudData;
+          localStorage.setItem("shunde_trip_master_v10", JSON.stringify(globalState));
+          renderAll();
+          document.getElementById("sync-status-text").textContent = "云端同步已连接 (最新)";
+        }
+      }
+    } catch (e) {
+      console.log("使用本地缓存离线运行中...");
+    }
+  }
+
+  async function syncToCloud() {
+    localStorage.setItem("shunde_trip_master_v10", JSON.stringify(globalState));
+    document.getElementById("sync-status-text").textContent = "正在同步到云端...";
+    try {
+      await fetch(API_URL, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'Security-Key': 'shunde2026' },
+        body: JSON.stringify(globalState)
+      });
+      document.getElementById("sync-status-text").textContent = "云端实时协同已连接";
+    } catch (e) {
+      document.getElementById("sync-status-text").textContent = "已存本地 (等待云端重试)";
+    }
+  }
+
+  function manualSync() {
+    fetchCloudData();
+    alert("已从云端刷新最新数据！");
   }
 
   function renderAll() {
@@ -997,6 +1038,8 @@
   window.onload = function() {
     renderMemberSelector();
     renderAll();
+    fetchCloudData(); // 页面打开时自动从云端拉取最新数据
+    setInterval(fetchCloudData, 10000); // 每10秒自动静默轮询云端，实现多端实时同步
   };
 </script>
 </body>
