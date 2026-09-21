@@ -34,33 +34,49 @@
   header h1 { font-size: 24px; font-weight: 700; color: var(--primary); letter-spacing: -0.5px; }
   header p { color: var(--text-muted); font-size: 13px; margin-top: 4px; }
 
-  /* 短口令云端同步面板 */
+  /* 修复 UI 溢出的短口令云端同步面板 */
   .sync-panel {
     background: #fff3e0;
     border: 1px solid #ffe0b2;
     border-radius: var(--radius-lg);
     padding: 14px 16px;
-    margin: 12px 0;
+    margin: 14px 0;
     box-shadow: var(--shadow);
+    text-align: left;
   }
-  .sync-panel-title { font-size: 13px; font-weight: 700; color: #e65100; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
-  .sync-row { display: flex; gap: 8px; align-items: center; }
+  .sync-panel-title { font-size: 13px; font-weight: 700; color: #e65100; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+  .sync-desc { font-size: 12px; color: #795548; margin-bottom: 10px; line-height: 1.4; }
+  
+  /* 弹性容器，防溢出核心 */
+  .sync-row { 
+    display: flex; 
+    gap: 8px; 
+    align-items: stretch;
+    width: 100%;
+  }
   .sync-input {
     flex: 1;
-    padding: 8px 12px;
+    min-width: 0; /* 关键：防止输入框撑破 flex 布局 */
+    padding: 9px 12px;
     border: 1px solid #ffcc80;
     border-radius: var(--radius-md);
-    font-size: 13px;
+    font-size: 14px;
     background: #fff;
     outline: none;
+  }
+  .sync-btn-group {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0; /* 确保按钮不被挤压变形 */
   }
   .btn-sync-cloud {
     background: #e65100;
     color: #fff;
     border: none;
-    padding: 8px 14px;
+    padding: 0 14px;
+    height: 38px;
     border-radius: var(--radius-md);
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 600;
     cursor: pointer;
     white-space: nowrap;
@@ -69,14 +85,15 @@
     background: #fff;
     color: #e65100;
     border: 1px solid #e65100;
-    padding: 8px 14px;
+    padding: 0 14px;
+    height: 38px;
     border-radius: var(--radius-md);
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 600;
     cursor: pointer;
     white-space: nowrap;
   }
-  .sync-status { font-size: 11px; color: #795548; margin-top: 6px; }
+  .sync-status { font-size: 11px; color: #795548; margin-top: 8px; word-break: break-all; }
 
   .countdown {
     background: linear-gradient(135deg, #ff7043, #d84315);
@@ -368,18 +385,20 @@
   <h1>🥢 顺德吃货团 · 4 天 3 晚</h1>
   <p>2026.11.06 – 11.09 · 广州 & 顺德 · Kelly / Fred / Shirley / Wentian</p>
   
-  <!-- 短口令云端同步面板 -->
+  <!-- 优化后的短口令同步面板（完美自适应防溢出） -->
   <div class="sync-panel">
     <div class="sync-panel-title">📱 手机短口令云端同步</div>
-    <div style="font-size:12px; color:#795548; margin-bottom:8px; line-height:1.4;">
-      输入你们自定的短口令（如 <b>shunde88</b>），两台 iPhone 即可无缝同步，无需复制粘贴长代码！
+    <div class="sync-desc">
+      输入相同短口令（如 <b>shunde88</b>），两台手机点击<b>上传/拉取</b>即可实时互通！
     </div>
     <div class="sync-row">
-      <input type="text" id="sync-code-input" class="sync-input" placeholder="输入短口令（例如: shunde88）" value="shunde88">
-      <button class="btn-sync-cloud" onclick="uploadToCloud()">☁️ 上传</button>
-      <button class="btn-sync-pull" onclick="pullFromCloud()">🔄 拉取</button>
+      <input type="text" id="sync-code-input" class="sync-input" placeholder="输入口令" value="shunde88">
+      <div class="sync-btn-group">
+        <button class="btn-sync-cloud" onclick="uploadToCloud()">☁️ 上传</button>
+        <button class="btn-sync-pull" onclick="pullFromCloud()">🔄 拉取</button>
+      </div>
     </div>
-    <div class="sync-status" id="sync-status-msg">状态：已加载本地缓存</div>
+    <div class="sync-status" id="sync-status-msg">状态：就绪（请输入口令同步）</div>
   </div>
 </header>
 
@@ -637,10 +656,9 @@
     feedbacks: { day1: [], day2: [], day3: [], day4: [] }
   };
 
-  let globalState = JSON.parse(localStorage.getItem("shunde_trip_master_v19")) || defaultGlobalState;
+  let globalState = JSON.parse(localStorage.getItem("shunde_trip_master_v21")) || defaultGlobalState;
   let dayEditingState = { day1: false, day2: false, day3: false, day4: false };
 
-  // 短口令云端同步（基于全球公共免费 JSONBin API，以输入的短密码作为 Key）
   async function uploadToCloud() {
     const code = document.getElementById("sync-code-input").value.trim();
     const statusMsg = document.getElementById("sync-status-msg");
@@ -648,14 +666,19 @@
     
     statusMsg.textContent = "⏳ 正在上传到云端...";
     try {
-      // 顺德吃货团专属简易同步通道（使用免费公开的 npoint.io 临时闭环接口）
-      // 如果自定义口令，我们会将其映射到一个安全的公用存档
-      const binId = "shunde_" + code;
-      const response = dgSaveToPublic(binId, globalState);
-      
-      statusMsg.textContent = `✅ 成功！口令【${code}】已上传云端，另一台手机输入它点“拉取”即可。`;
+      const url = `https://json.extendsclass.com/bin/shunde_${code}`;
+      const res = await fetch(url, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(globalState)
+      });
+      if (res.ok) {
+        statusMsg.textContent = `✅ 成功！口令【${code}】已保存，另一台手机输入它点“拉取”即可。`;
+      } else {
+        statusMsg.textContent = "❌ 上传遭拒，请换一个口令再试";
+      }
     } catch (e) {
-      statusMsg.textContent = "❌ 上传失败，请检查网络";
+      statusMsg.textContent = "❌ 网络连接失败，请检查网络";
     }
   }
 
@@ -666,43 +689,28 @@
     
     statusMsg.textContent = "⏳ 正在从云端拉取...";
     try {
-      const binId = "shunde_" + code;
-      const remoteData = dgLoadFromPublic(binId);
-      if (remoteData && remoteData.daySchedules) {
-        globalState = remoteData;
-        saveLocal();
-        renderAll();
-        statusMsg.textContent = `🎉 成功！已同步口令【${code}】的最新行程。`;
+      const url = `https://json.extendsclass.com/bin/shunde_${code}?t=` + Date.now();
+      const res = await fetch(url);
+      if (res.ok) {
+        const remoteData = await res.json();
+        if (remoteData && remoteData.daySchedules) {
+          globalState = remoteData;
+          saveLocal();
+          renderAll();
+          statusMsg.textContent = `🎉 成功！已同步口令【${code}】的最新行程。`;
+        } else {
+          statusMsg.textContent = `⚠️ 口令【${code}】无有效数据，请确认对方已点击“上传”。`;
+        }
       } else {
-        statusMsg.textContent = `⚠️ 未找到口令【${code}】的数据，请确认对方已点击“上传”。`;
+        statusMsg.textContent = `⚠️ 未找到口令【${code}】对应的云端数据。`;
       }
     } catch (e) {
-      statusMsg.textContent = "❌ 拉取失败，请重试";
+      statusMsg.textContent = "❌ 拉取失败，请检查网络或口令";
     }
   }
 
-  // 利用浏览器本地多端共享键值（或公开API bridge模拟）
-  function dgSaveToPublic(key, data) {
-    localStorage.setItem("cloud_" + key, JSON.stringify(data));
-    // 同时通过公共跨域 API 备份（保障异地局域网外也能通）
-    fetch(`https://api.npoint.io/`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    }).then(res => res.json()).then(res => {
-      if(res && res.id) localStorage.setItem("cloud_id_" + key, res.id);
-    }).catch(()=>{});
-    return true;
-  }
-
-  function dgLoadFromPublic(key) {
-    const localCloud = localStorage.getItem("cloud_" + key);
-    if (localCloud) return JSON.parse(localCloud);
-    return null;
-  }
-
   function saveLocal() {
-    localStorage.setItem("shunde_trip_master_v19", JSON.stringify(globalState));
+    localStorage.setItem("shunde_trip_master_v21", JSON.stringify(globalState));
   }
 
   function renderAll() {
