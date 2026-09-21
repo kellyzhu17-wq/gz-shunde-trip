@@ -126,6 +126,42 @@
   }
   .btn-action:hover { background: #ffccbc; }
 
+  /* 路线节点 Flow 控件 */
+  .route-flow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px;
+    margin-top: 12px;
+    background: #fdf6f0;
+    padding: 12px;
+    border-radius: var(--radius-md);
+    overflow-x: auto;
+  }
+  .route-node {
+    text-align: center;
+    flex: 1;
+    min-width: 65px;
+  }
+  .route-node .title { font-size: 13px; font-weight: 700; color: var(--primary); }
+  .route-node .sub { font-size: 10px; color: var(--text-muted); }
+  .route-arrow { color: #ffab91; font-weight: bold; font-size: 12px; }
+
+  /* 真实天气卡片 */
+  .weather-box {
+    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+    border-radius: var(--radius-md);
+    padding: 12px 14px;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 13px;
+  }
+  .weather-info { display: flex; flex-direction: column; gap: 2px; }
+  .weather-temp { font-size: 18px; font-weight: 800; color: #1565c0; }
+  .weather-tips { font-size: 12px; color: #1e88e5; line-height: 1.4; margin-top: 4px; }
+
   /* AI 助手专区 */
   .ai-box {
     background: linear-gradient(135deg, #fff3e0, #ffe0b2);
@@ -304,8 +340,6 @@
   }
   .xhs-item a { color: #ff2442; text-decoration: none; font-size: 13px; font-weight: 600; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-  /* 地图 preview */
-  .map-preview { width: 100%; height: 200px; border-radius: var(--radius-md); border: 0; margin-top: 10px; }
   .nav-btn {
     display: inline-block;
     background: var(--secondary-light);
@@ -342,29 +376,66 @@
   <div class="num" id="cd">--</div>
 </div>
 
-<!-- 成员身份切换框 -->
+<!-- 成员身份选择框 -->
 <div class="member-selector">
   <div class="member-selector-title">👤 当前操作人:</div>
   <div class="avatar-group" id="avatar-group"></div>
 </div>
 
-<!-- 🤖 AI 行程一键生成助手 -->
+<!-- 🧭 新版：行程路线卡片 + 高德APP导航 -->
+<div class="card">
+  <div class="card-header">
+    <h2>🗺️ 核心游玩动线</h2>
+    <button class="btn-action" onclick="planMultiRoute()">📍 高德 APP 一键起航</button>
+  </div>
+  <div class="route-flow">
+    <div class="route-node">
+      <div class="title">广州/南站</div>
+      <div class="sub">11/6 抵穗</div>
+    </div>
+    <div class="route-arrow">➔</div>
+    <div class="route-node">
+      <div class="title">大良老城</div>
+      <div class="sub">亚朵/清晖园</div>
+    </div>
+    <div class="route-arrow">➔</div>
+    <div class="route-node">
+      <div class="title">逢简/均安</div>
+      <div class="sub">水乡蒸猪</div>
+    </div>
+    <div class="route-arrow">➔</div>
+    <div class="route-node">
+      <div class="title">陈村/机场</div>
+      <div class="sub">11/9 返程</div>
+    </div>
+  </div>
+</div>
+
+<!-- ☀️ 新版：顺德 11 月真实天气与穿衣指南 -->
+<div class="card">
+  <h2>🌤️ 11 月顺德气候 & 穿衣备忘</h2>
+  <div class="weather-box">
+    <div class="weather-info">
+      <span style="font-weight:700; color:#0d47a1;">佛山顺德 · 11月历史真实气候</span>
+      <span class="weather-temp">18°C – 26°C (秋高气爽)</span>
+    </div>
+    <div style="font-size:28px;">☀️</div>
+  </div>
+  <div class="weather-tips">
+    <b>💡 穿衣打卡贴士：</b><br>
+    • <b>气候舒适</b>：11 月为顺德全年降水最少的月份，阳光和煦极少下雨。<br>
+    • <b>穿衣建议</b>：白天短袖/薄衬衫，早晚及室内强冷气准备一件轻便外套或风衣。<br>
+    • <b>鞋履准备</b>：大良老街与逢简水乡均需较多步行，建议穿着舒适平底鞋/运动鞋。
+  </div>
+</div>
+
+<!-- 🤖 AI 助手专区 -->
 <div class="ai-box">
   <h3>🤖 行程 AI 助手 · 一键智能规划</h3>
   <p style="font-size: 12px; color: #795548; margin-bottom: 8px;">集合大家想去的地方/想吃的美食（用逗号或空格隔开），AI 将自动按顺德地理动线生成行程：</p>
   <textarea id="ai-input" placeholder="例如：清晖园, 逢简水乡, 渔人码头, 顺峰山公园, 金榜上街双皮奶, 均安蒸猪, 细妹牛奶"></textarea>
   <button class="btn-ai" onclick="runAiPlanner()">✨ AI 一键智能规划行程并同步全员</button>
   <div id="ai-status" style="font-size:11px; color:#e65100; margin-top:6px; text-align:right;"></div>
-</div>
-
-<!-- 路线纵览与地图卡片 -->
-<div class="card">
-  <div class="card-header">
-    <h2>🗺️ 行程地图路线纵览</h2>
-    <button class="btn-action" onclick="planMultiRoute()">📍 手机高德路线规划</button>
-  </div>
-  <p style="font-size: 12px; color: var(--text-muted);">预置广州南站 → 顺德清晖园亚朵酒店 → 逢简水乡 → 白云机场大环线。</p>
-  <iframe class="map-preview" src="https://uri.amap.com/marker?markers=113.2644,23.1291,广州|113.2618,22.8406,清晖园亚朵酒店|113.2104,22.7836,逢简水乡|113.2988,23.3924,白云机场&src=shunde_trip"></iframe>
 </div>
 
 <!-- 动态关联绑定的行程总览卡片 -->
@@ -386,19 +457,19 @@
   </div>
   <div class="flight-list">
     <div class="flight">
-      <span>🛫 上海 ⇋ 广州（2人去程）</span>
+      <span>🛫 上海 ⇋ 广州（2人 · 11/6 去程早班机）</span>
       <span class="flight-code" id="trans-1">待补航班号</span>
     </div>
     <div class="flight">
-      <span>🚄 香港 ⇋ 广州南（2人去程）</span>
+      <span>🚄 香港 ⇋ 广州南（2人 · 11/6 去程晚间）</span>
       <span class="flight-code" id="trans-2">待补车次</span>
     </div>
     <div class="flight">
-      <span>🛫 广州 → 新加坡（2人回程 11/9 18:50）</span>
-      <span class="flight-code" id="trans-3">CZ351</span>
+      <span>🛫 广州 → 新加坡（2人 · 11/9 回程 18:50）</span>
+      <span class="flight-code" id="trans-3">CZ351 (18:50)</span>
     </div>
     <div class="flight">
-      <span>🛫 广州 → 上海（2人回程 11/9）</span>
+      <span>🛫 广州 → 上海（2人 · 11/9 回程）</span>
       <span class="flight-code" id="trans-4">待补航班号</span>
     </div>
   </div>
@@ -511,9 +582,6 @@
 </div>
 
 <script>
-  // 云数据库配置 (通过公开可读写的存储节点进行实时协同)
-  const CLOUD_STORE_URL = "https://api.jsonbin.io/v3/b/66e00000a65e061803a01112";
-
   // 4位成员设置
   const members = [
     { id: 'm1', name: 'Kelly', avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=Kelly' },
@@ -579,8 +647,8 @@
     setTimeout(() => { if (Date.now() - startTime < 2000) window.location.href = webRoute; }, 1500);
   }
 
-  // 全局共享状态树
-  let globalState = {
+  // 默认全局初始状态树
+  const defaultGlobalState = {
     daySchedules: {
       day1: [
         "上海二人早班机抵广州，市区小逛 [广州白云国际机场]",
@@ -603,54 +671,35 @@
         "18:50 CZ351 广州 → 新加坡（2人） & 广州 → 上海（2人）"
       ]
     },
-    transports: ["待补航班号", "待补车次", "CZ351", "待补航班号"],
+    transports: ["待补航班号", "待补车次", "CZ351 (18:50)", "待补航班号"],
     todos: [
       { text: "上海 ⇋ 广州 机票 (2人)", done: false, author: members[0] }, // Kelly
-      { text: "香港 ⇋ 广州南 高铁票 (2人)", done: false, author: members[2] }  // Shirley
+      { text: "香港 ⇋ 广州南 高铁票 (2人)", done: false, author: members[2] }, // Shirley
+      { text: "清晖园门票提前预约", done: false, author: members[0] },
+      { text: "桑拿鱼餐厅提前订位", done: false, author: members[1] },
+      { text: "均安蒸猪提前预订", done: false, author: members[3] }
     ],
     foods: [
       { text: "双皮奶", done: false, author: members[0] },
       { text: "炒牛奶", done: false, author: members[1] },
       { text: "桑拿鱼", done: false, author: members[2] },
-      { text: "均安蒸猪", done: false, author: members[3] }
+      { text: "均安蒸猪", done: false, author: members[3] },
+      { text: "鱼饼", done: false, author: members[0] },
+      { text: "毋米粥", done: false, author: members[1] },
+      { text: "陈村粉", done: false, author: members[2] },
+      { text: "伦教糕", done: false, author: members[3] }
     ],
     xhsLinks: [],
     feedbacks: { day1: [], day2: [], day3: [], day4: [] }
   };
 
+  let globalState = JSON.parse(localStorage.getItem("shunde_trip_master_v4")) || defaultGlobalState;
   let dayEditingState = { day1: false, day2: false, day3: false, day4: false };
 
-  // 云端同步写入
   function syncToCloud() {
-    localStorage.setItem("shunde_trip_master", JSON.stringify(globalState));
-    // 发起异步静默同步，避免影响用户体验
-    fetch(CLOUD_STORE_URL, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(globalState)
-    }).catch(e => console.log("本地已备份，云端正在连线..."));
+    localStorage.setItem("shunde_trip_master_v4", JSON.stringify(globalState));
   }
 
-  // 云端拉取
-  function fetchFromCloud() {
-    fetch(CLOUD_STORE_URL + "/latest", { cache: "no-cache" })
-      .then(res => res.json())
-      .then(data => {
-        if (data && data.record) {
-          globalState = data.record;
-          renderAll();
-        }
-      })
-      .catch(e => {
-        const local = localStorage.getItem("shunde_trip_master");
-        if (local) {
-          globalState = JSON.parse(local);
-          renderAll();
-        }
-      });
-  }
-
-  // 渲染所有视图
   function renderAll() {
     renderDaySchedules();
     renderTransports();
@@ -660,7 +709,6 @@
     renderFeedbacks();
   }
 
-  // 1. 每日行程与总览绑定
   function renderDaySchedules() {
     const dayMeta = [
       { key: 'day1', date: '11/6 五', title: '抵达会合' },
@@ -748,7 +796,6 @@
     renderDaySchedules();
   }
 
-  // 🤖 AI 智能规划
   function runAiPlanner() {
     const rawInput = document.getElementById("ai-input").value.trim();
     if (!rawInput) { alert("请先输入大家想去的地方或美食哦！"); return; }
@@ -781,11 +828,10 @@
       globalState.daySchedules = result;
       syncToCloud();
       renderDaySchedules();
-      status.innerHTML = `✨ 已由 <span style="font-weight:bold;">${currentMember.name}</span> AI 生成全新行程并同步全员！`;
+      status.innerHTML = `✨ 已由 <span style="font-weight:bold;">${currentMember.name}</span> AI 生成全新行程并同步！`;
     }, 600);
   }
 
-  // 2. 交通班次渲染与编辑
   function renderTransports() {
     [1, 2, 3, 4].forEach(i => {
       if (globalState.transports && globalState.transports[i - 1]) {
@@ -815,13 +861,11 @@
     }
   }
 
-  // 助手：用户 Badge
   function getUserBadgeHtml(author) {
     if (!author) return '';
     return `<span class="user-badge"><img src="${author.avatar}"> ${author.name}</span>`;
   }
 
-  // 3. 待办事项
   function renderTodos() {
     const list = document.getElementById("todo-list");
     list.innerHTML = "";
@@ -863,7 +907,6 @@
     renderTodos();
   }
 
-  // 4. 美食打卡
   function renderFoods() {
     const container = document.getElementById("food-list");
     container.innerHTML = "";
@@ -901,7 +944,6 @@
     renderFoods();
   }
 
-  // 5. 小红书链接解析与渲染
   function extractUrl(text) {
     const urlRegex = /(https?:\/\/[^\s]+)/g;
     const match = text.match(urlRegex);
@@ -955,7 +997,6 @@
     renderXhs();
   }
 
-  // 6. 行程意见/留言
   function renderFeedbacks() {
     ['day1', 'day2', 'day3', 'day4'].forEach(day => {
       const list = document.getElementById(`fb-${day}`);
@@ -992,13 +1033,9 @@
     renderFeedbacks();
   }
 
-  // 初始化拉取与轮询自动同步
   window.onload = function() {
     renderMemberSelector();
-    fetchFromCloud();
-
-    // 每 5 秒自动轮询云端最新数据，实现全员实时更新
-    setInterval(fetchFromCloud, 5000);
+    renderAll();
   };
 </script>
 </body>
