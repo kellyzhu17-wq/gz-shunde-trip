@@ -365,6 +365,7 @@
 
 <div class="card">
   <h2>🍽 必吃打卡清单 <span class="local-badge">Local 专属</span></h2>
+  <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">记录你想拔草的顺德美食，仅保存在你的手机上：</p>
   <div class="tag-container" id="food-list"></div>
   <div class="add-box">
     <input type="text" id="new-food-input" placeholder="添加想吃的美食...">
@@ -476,7 +477,7 @@
       "🕐 19:30–20:30 金榜慢逛：金榜上街散步，喝杯鲜水牛奶即回亚朵酒店"
     ],
     day2: [
-      "🕐 9:00–12:00 逢简水乡：打车 25–30 分钟至 [逢简水乡游客中心]｜先坐手摇乌篷船 (约1.5小时)，后慢逛古桥老祠堂",
+      "🕐 9:00–12:00 逢简水乡：打车 25–30 分钟至 [逢简水乡游客中心]｜先坐手摇乌篷船 (约1.5小时),后慢逛古桥老祠堂",
       "🍽️ 12:00–13:30 午餐·水乡本味：村内 [水乡人家私房菜]｜必点清蒸鲩鱼、顺德鱼饼、传统陈村粉、上汤菜心",
       "🕐 14:30–17:00 小众静地二选一：[乌洲水闸滨水碧道] (江景大草坪野餐) 或 [青田村] (400年古村几乎无商业化)",
       "🍽️ 17:30–19:00 晚餐·清爽收尾：打车 20 分钟回大良 [黄但记（陈村粉总店）]｜必点鸡油花雕浸陈村粉、白切鸡",
@@ -491,26 +492,21 @@
     ]
   };
 
-  // 用户的 Local 本地私密数据
+  // 用户的 Local 本地私密数据（默认打卡清单清空，待办中2人无斜杠）
   const defaultLocalState = {
     todos: [
-      { text: "上海 ⇋ 广州 机票 (2人)", done: false, author: members[0] },
-      { text: "香港 ⇋ 广州南 高铁票 (2/人)", done: false, author: members[2] },
+      { text: "上海 广州 机票 (2人)", done: false, author: members[0] },
+      { text: "香港 广州南 高铁票 (2人)", done: false, author: members[2] },
       { text: "清晖园门票提前预约", done: false, author: members[0] }
     ],
-    foods: [
-      { text: "双皮奶", done: false, author: members[0] },
-      { text: "炒牛奶", done: false, author: members[1] },
-      { text: "桑拿鱼", done: false, author: members[2] },
-      { text: "均安蒸猪", done: false, author: members[3] }
-    ],
+    foods: [],
     xhsLinks: []
   };
 
-  let localState = JSON.parse(localStorage.getItem("shunde_trip_local_v25")) || defaultLocalState;
+  let localState = JSON.parse(localStorage.getItem("shunde_trip_local_v26")) || defaultLocalState;
 
   function saveLocalState() {
-    localStorage.setItem("shunde_trip_local_v25", JSON.stringify(localState));
+    localStorage.setItem("shunde_trip_local_v26", JSON.stringify(localState));
   }
 
   function renderAll() {
@@ -541,7 +537,6 @@
       listEl.innerHTML = "";
       (detailedSchedules[dayKey] || []).forEach(itemText => {
         const li = document.createElement("li");
-        // 自动将中括号或特定名字加上高德导航链接
         let formattedText = itemText.replace(/\[(.*?)\]/g, (match, p1) => {
           return `<a class="nav-btn" onclick="openAmap('${p1}')">📍 ${p1}</a>`;
         });
