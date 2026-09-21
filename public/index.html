@@ -602,23 +602,20 @@
     feedbacks: { day1: [], day2: [], day3: [], day4: [] }
   };
 
-  let globalState = JSON.parse(localStorage.getItem("shunde_trip_master_v16")) || defaultGlobalState;
+  let globalState = JSON.parse(localStorage.getItem("shunde_trip_master_v17")) || defaultGlobalState;
   let dayEditingState = { day1: false, day2: false, day3: false, day4: false };
 
-  // 使用无需认证的免口令开放 API 节点 (JsonBin.io 公开读取/写入)
-  const API_URL = "https://api.jsonbin.io/v3/b/66e66e6facd3cb34a8888888/latest"; // 替换为纯公开无密码中转地址或用下方通用 API
-
-  // 为了保证最简化，这里采用完全公开免 Token 的无密码 API (ExtendsClass 公开 Bin 模式)
-  const FREE_API_URL = "https://json.extendsclass.com/bin/shunde_trip_group_2026_free";
+  // 使用更稳定、专为无密码实时同步设计的 Npoint.io 免费 API 节点
+  const API_URL = "https://api.npoint.io/e731737be2e176378e9b";
 
   async function fetchCloudData() {
     try {
-      const res = await fetch(FREE_API_URL);
+      const res = await fetch(API_URL + "?t=" + Date.now()); // 加时间戳防手机强缓存
       if (res.ok) {
         const cloudData = await res.json();
         if (cloudData && cloudData.daySchedules) {
           globalState = cloudData;
-          localStorage.setItem("shunde_trip_master_v16", JSON.stringify(globalState));
+          localStorage.setItem("shunde_trip_master_v17", JSON.stringify(globalState));
           renderAll();
           document.getElementById("sync-status-text").textContent = "云端实时协同已连接 (最新)";
         }
@@ -629,11 +626,11 @@
   }
 
   async function syncToCloud() {
-    localStorage.setItem("shunde_trip_master_v16", JSON.stringify(globalState));
+    localStorage.setItem("shunde_trip_master_v17", JSON.stringify(globalState));
     document.getElementById("sync-status-text").textContent = "正在同步到云端...";
     try {
-      await fetch(FREE_API_URL, {
-        method: 'PUT',
+      await fetch(API_URL, {
+        method: 'POST', // Npoint 标准保存方法
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(globalState)
       });
@@ -1014,6 +1011,8 @@
     renderMemberSelector();
     renderAll();
     fetchCloudData(); // 页面加载时自动从云端拉取最新数据
+    // 增加后台自动轮询：每 10 秒自动静默向云端检查一次更新，确保两台手机实时同步
+    setInterval(fetchCloudData, 10000);
   };
 </script>
 </body>
