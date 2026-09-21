@@ -126,28 +126,7 @@
   }
   .btn-action:hover { background: #ffccbc; }
 
-  /* 路线节点 Flow 控件 */
-  .route-flow {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 4px;
-    margin-top: 12px;
-    background: #fdf6f0;
-    padding: 12px;
-    border-radius: var(--radius-md);
-    overflow-x: auto;
-  }
-  .route-node {
-    text-align: center;
-    flex: 1;
-    min-width: 65px;
-  }
-  .route-node .title { font-size: 13px; font-weight: 700; color: var(--primary); }
-  .route-node .sub { font-size: 10px; color: var(--text-muted); }
-  .route-arrow { color: #ffab91; font-weight: bold; font-size: 12px; }
-
-  /* 真实天气卡片 */
+  /* 天气卡片 */
   .weather-box {
     background: linear-gradient(135deg, #e3f2fd, #bbdefb);
     border-radius: var(--radius-md);
@@ -162,6 +141,27 @@
   .weather-temp { font-size: 18px; font-weight: 800; color: #1565c0; }
   .weather-tips { font-size: 12px; color: #1e88e5; line-height: 1.4; margin-top: 4px; }
 
+  /* 百事分账卡片 */
+  .aa-box {
+    background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+    border-radius: var(--radius-md);
+    padding: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .aa-btn {
+    background: #2e7d32;
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
   /* AI 助手专区 */
   .ai-box {
     background: linear-gradient(135deg, #fff3e0, #ffe0b2);
@@ -173,7 +173,7 @@
   .ai-box h3 { font-size: 15px; font-weight: 700; color: #e65100; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
   .ai-box textarea {
     width: 100%;
-    height: 70px;
+    height: 75px;
     padding: 10px;
     border: 1px solid #ffcc80;
     border-radius: var(--radius-md);
@@ -382,36 +382,19 @@
   <div class="avatar-group" id="avatar-group"></div>
 </div>
 
-<!-- 🧭 新版：行程路线卡片 + 高德APP导航 -->
+<!-- 💰 百事分账（百事AA记账）微信小程序接入 -->
 <div class="card">
-  <div class="card-header">
-    <h2>🗺️ 核心游玩动线</h2>
-    <button class="btn-action" onclick="planMultiRoute()">📍 高德 APP 一键起航</button>
-  </div>
-  <div class="route-flow">
-    <div class="route-node">
-      <div class="title">广州/南站</div>
-      <div class="sub">11/6 抵穗</div>
+  <h2>💰 团费分账 (百事AA记账)</h2>
+  <div class="aa-box">
+    <div>
+      <div style="font-size: 13px; font-weight: 700; color: #1b5e20;">顺德吃货团 AA 账本</div>
+      <div style="font-size: 11px; color: #388e3c; margin-top: 2px;">记账/平摊/垫付/一键结算 (微信小程序)</div>
     </div>
-    <div class="route-arrow">➔</div>
-    <div class="route-node">
-      <div class="title">大良老城</div>
-      <div class="sub">亚朵/清晖园</div>
-    </div>
-    <div class="route-arrow">➔</div>
-    <div class="route-node">
-      <div class="title">逢简/均安</div>
-      <div class="sub">水乡蒸猪</div>
-    </div>
-    <div class="route-arrow">➔</div>
-    <div class="route-node">
-      <div class="title">陈村/机场</div>
-      <div class="sub">11/9 返程</div>
-    </div>
+    <a href="weixin://dl/business/?t=bestrie_aa" class="aa-btn" onclick="openBestrieAA(event)">📲 打开百事分账</a>
   </div>
 </div>
 
-<!-- ☀️ 新版：顺德 11 月真实天气与穿衣指南 -->
+<!-- 🌤️ 顺德 11 月真实天气与穿衣指南 -->
 <div class="card">
   <h2>🌤️ 11 月顺德气候 & 穿衣备忘</h2>
   <div class="weather-box">
@@ -429,18 +412,18 @@
   </div>
 </div>
 
-<!-- 🤖 AI 助手专区 -->
+<!-- 🤖 升级版 AI 智能行程规划助手 -->
 <div class="ai-box">
   <h3>🤖 行程 AI 助手 · 一键智能规划</h3>
-  <p style="font-size: 12px; color: #795548; margin-bottom: 8px;">集合大家想去的地方/想吃的美食（用逗号或空格隔开），AI 将自动按顺德地理动线生成行程：</p>
-  <textarea id="ai-input" placeholder="例如：清晖园, 逢简水乡, 渔人码头, 顺峰山公园, 金榜上街双皮奶, 均安蒸猪, 细妹牛奶"></textarea>
-  <button class="btn-ai" onclick="runAiPlanner()">✨ AI 一键智能规划行程并同步全员</button>
+  <p style="font-size: 12px; color: #795548; margin-bottom: 8px;">支持指定天数，如：<code>Day1 想吃毋米粥，Day2 去清晖园与双皮奶，Day3 想去逢简水乡</code>：</p>
+  <textarea id="ai-input" placeholder="例如：Day1 抵穗吃毋米粥；Day2 清晖园、桑拿鱼、双皮奶；Day3 逢简水乡、均安蒸猪；Day4 陈村早茶"></textarea>
+  <button class="btn-ai" onclick="runAiPlanner()">✨ AI 一键智能规划行程并同步总览</button>
   <div id="ai-status" style="font-size:11px; color:#e65100; margin-top:6px; text-align:right;"></div>
 </div>
 
 <!-- 动态关联绑定的行程总览卡片 -->
 <div class="card">
-  <h2>📋 行程总览（自动实时全员同步）</h2>
+  <h2>📋 行程总览（实时同步更新）</h2>
   <table>
     <thead>
       <tr><th>日期</th><th>主题</th><th>重点安排</th></tr>
@@ -617,6 +600,14 @@
   tick();
   setInterval(tick, 30000);
 
+  // 打开百事分账（微信小程序唤起）
+  function openBestrieAA(e) {
+    const isWeChat = /MicroMessenger/i.test(navigator.userAgent);
+    if (!isWeChat) {
+      alert("请在微信内打开或搜索微信小程序【百事AA记账】进入分账账本哦！");
+    }
+  }
+
   // 高德导航
   function openAmap(keyword) {
     const encodedKeyword = encodeURIComponent(keyword);
@@ -631,20 +622,6 @@
     const startTime = Date.now();
     window.location.href = appScheme;
     setTimeout(() => { if (Date.now() - startTime < 2000) window.location.href = webUrl; }, 1500);
-  }
-
-  function planMultiRoute() {
-    const isiOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-    const isAndroid = /Android/.test(navigator.userAgent);
-    const webRoute = "https://uri.amap.com/navigation?from=113.2644,23.0088,广州南站&to=113.2618,22.8406,顺德清晖园&mode=car";
-    let appScheme = isiOS 
-      ? "iosamap://path?sourceApplication=shunde_trip&dlat=22.8406&dlon=113.2618&dname=顺德清晖园&dev=0&t=0"
-      : "androidamap://route?sourceApplication=shunde_trip&dlat=22.8406&dlon=113.2618&dname=顺德清晖园&dev=0&m=0";
-
-    if (!isiOS && !isAndroid) { window.open(webRoute, "_blank"); return; }
-    const startTime = Date.now();
-    window.location.href = appScheme;
-    setTimeout(() => { if (Date.now() - startTime < 2000) window.location.href = webRoute; }, 1500);
   }
 
   // 默认全局初始状态树
@@ -693,11 +670,11 @@
     feedbacks: { day1: [], day2: [], day3: [], day4: [] }
   };
 
-  let globalState = JSON.parse(localStorage.getItem("shunde_trip_master_v4")) || defaultGlobalState;
+  let globalState = JSON.parse(localStorage.getItem("shunde_trip_master_v6")) || defaultGlobalState;
   let dayEditingState = { day1: false, day2: false, day3: false, day4: false };
 
   function syncToCloud() {
-    localStorage.setItem("shunde_trip_master_v4", JSON.stringify(globalState));
+    localStorage.setItem("shunde_trip_master_v6", JSON.stringify(globalState));
   }
 
   function renderAll() {
@@ -727,8 +704,9 @@
       list.innerHTML = "";
 
       let dayHighlights = [];
+      const currentDayItems = globalState.daySchedules[day] || [];
 
-      (globalState.daySchedules[day] || []).forEach((itemText, idx) => {
+      currentDayItems.forEach((itemText, idx) => {
         let cleanText = itemText.replace(/\[.*?\]/g, "").trim();
         if (cleanText) dayHighlights.push(cleanText);
 
@@ -796,39 +774,61 @@
     renderDaySchedules();
   }
 
+  // 🤖 升级版 AI 规划引擎：支持识别 Day1 / Day2 / 第X天
   function runAiPlanner() {
     const rawInput = document.getElementById("ai-input").value.trim();
-    if (!rawInput) { alert("请先输入大家想去的地方或美食哦！"); return; }
+    if (!rawInput) { alert("请先输入大家想去的地方或包含 Day1/Day2 的规划建议哦！"); return; }
 
     const status = document.getElementById("ai-status");
-    status.textContent = "🤖 AI 思考规划中...";
+    status.textContent = "🤖 AI 正在智能解析天数并规划归类...";
 
-    const items = rawInput.split(/[,，\n\s]+/).filter(x => x.length > 0);
-
-    let result = {
-      day1: ["上海/香港团队抵达会合", "在大良老街吃夜宵与小吃"],
-      day2: ["大良老城打卡 & 顺峰山周边"],
-      day3: ["水乡与均安/容桂特色打卡"],
-      day4: ["陈村/伦教早茶及返程准备"]
+    let newSchedules = {
+      day1: [],
+      day2: [],
+      day3: [],
+      day4: []
     };
 
-    items.forEach(item => {
-      if (item.includes("水乡") || item.includes("均安") || item.includes("蒸猪") || item.includes("容桂") || item.includes("渔人码头")) {
-        result.day3.push(`${item} [${item}]`);
-      } else if (item.includes("陈村") || item.includes("伦教") || item.includes("早茶") || item.includes("手信")) {
-        result.day4.push(`${item} [${item}]`);
-      } else if (item.includes("夜宵") || item.includes("甜品") || item.includes("牛奶") || item.includes("粥")) {
-        result.day1.push(`体验 ${item} [${item}]`);
+    // 按分号、换行或句号拆分语句
+    const sentences = rawInput.split(/[;；\n]+/).filter(x => x.trim().length > 0);
+
+    sentences.forEach(sentence => {
+      let targetDay = null;
+      if (/day\s*1|第一天|11\/6|11月6/i.test(sentence)) targetDay = "day1";
+      else if (/day\s*2|第二天|11\/7|11月7/i.test(sentence)) targetDay = "day2";
+      else if (/day\s*3|第三天|11\/8|11月8/i.test(sentence)) targetDay = "day3";
+      else if (/day\s*4|第四天|11\/9|11月9/i.test(sentence)) targetDay = "day4";
+
+      // 提取核心景点与标记
+      let cleanContent = sentence.replace(/day\s*[1-4]|第一天|第二天|第三天|第四天/gi, "").trim();
+
+      if (targetDay) {
+        newSchedules[targetDay].push(`${cleanContent} [${cleanContent.slice(0,6)}]`);
       } else {
-        result.day2.push(`${item} [${item}]`);
+        // 如果没有显式指定天数，走地理算法判断
+        if (cleanContent.includes("水乡") || cleanContent.includes("均安") || cleanContent.includes("蒸猪")) {
+          newSchedules.day3.push(`${cleanContent} [${cleanContent}]`);
+        } else if (cleanContent.includes("陈村") || cleanContent.includes("手信") || cleanContent.includes("返程")) {
+          newSchedules.day4.push(`${cleanContent} [${cleanContent}]`);
+        } else if (cleanContent.includes("夜宵") || cleanContent.includes("抵达") || cleanContent.includes("会合")) {
+          newSchedules.day1.push(`${cleanContent} [${cleanContent}]`);
+        } else {
+          newSchedules.day2.push(`${cleanContent} [${cleanContent}]`);
+        }
       }
     });
 
+    // 补齐未提到天数的默认兜底
+    if(newSchedules.day1.length === 0) newSchedules.day1 = globalState.daySchedules.day1;
+    if(newSchedules.day2.length === 0) newSchedules.day2 = globalState.daySchedules.day2;
+    if(newSchedules.day3.length === 0) newSchedules.day3 = globalState.daySchedules.day3;
+    if(newSchedules.day4.length === 0) newSchedules.day4 = globalState.daySchedules.day4;
+
     setTimeout(() => {
-      globalState.daySchedules = result;
+      globalState.daySchedules = newSchedules;
       syncToCloud();
       renderDaySchedules();
-      status.innerHTML = `✨ 已由 <span style="font-weight:bold;">${currentMember.name}</span> AI 生成全新行程并同步！`;
+      status.innerHTML = `✨ 已由 <span style="font-weight:bold;">${currentMember.name}</span> AI 按天数精准更新行程！`;
     }, 600);
   }
 
