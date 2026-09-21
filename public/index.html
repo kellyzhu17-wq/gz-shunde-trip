@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>顺德吃货团 · 4 天 3 晚</title>
+<title>顺德吃货团 · 4 天 3 晚出行参考指南</title>
 <style>
   :root {
     --bg-color: #f7f8fa;
@@ -34,52 +34,6 @@
   header h1 { font-size: 24px; font-weight: 700; color: var(--primary); letter-spacing: -0.5px; }
   header p { color: var(--text-muted); font-size: 13px; margin-top: 4px; }
 
-  /* 物理文件备份同步面板（100% 成功，绝不报错） */
-  .sync-panel {
-    background: #fff3e0;
-    border: 1px solid #ffe0b2;
-    border-radius: var(--radius-lg);
-    padding: 14px 16px;
-    margin: 14px 0;
-    box-shadow: var(--shadow);
-    text-align: left;
-  }
-  .sync-panel-title { font-size: 13px; font-weight: 700; color: #e65100; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
-  .sync-desc { font-size: 12px; color: #795548; margin-bottom: 10px; line-height: 1.4; }
-  .sync-row { 
-    display: flex; 
-    gap: 8px; 
-    align-items: stretch;
-    width: 100%;
-  }
-  .btn-sync-export {
-    flex: 1;
-    background: #e65100;
-    color: #fff;
-    border: none;
-    padding: 10px;
-    height: 40px;
-    border-radius: var(--radius-md);
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    text-align: center;
-  }
-  .btn-sync-import {
-    flex: 1;
-    background: #fff;
-    color: #e65100;
-    border: 1px solid #e65100;
-    padding: 10px;
-    height: 40px;
-    border-radius: var(--radius-md);
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    text-align: center;
-  }
-  .sync-status { font-size: 11px; color: #795548; margin-top: 8px; word-break: break-all; }
-
   .countdown {
     background: linear-gradient(135deg, #ff7043, #d84315);
     color: #fff;
@@ -92,7 +46,6 @@
   .countdown .label { font-size: 13px; opacity: 0.9; text-transform: uppercase; letter-spacing: 1px; }
   .countdown .num { font-size: 32px; font-weight: 800; margin-top: 2px; }
 
-  /* 成员身份选择框 */
   .member-selector {
     background: var(--card-bg);
     border-radius: var(--radius-lg);
@@ -138,18 +91,15 @@
   }
   .card h2 { font-size: 17px; font-weight: 700; color: var(--text-main); margin: 0; display: flex; align-items: center; gap: 6px; }
 
-  .btn-action {
-    background: var(--primary-light);
-    color: var(--primary);
-    border: none;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 12px;
+  .local-badge {
+    background: #e0f2fe;
+    color: #0369a1;
+    font-size: 11px;
     font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s;
+    padding: 2px 8px;
+    border-radius: 10px;
+    border: 1px solid #bae6fd;
   }
-  .btn-action:hover { background: #ffccbc; }
 
   .weather-box {
     background: linear-gradient(135deg, #e3f2fd, #bbdefb);
@@ -175,7 +125,7 @@
   .ai-box h3 { font-size: 15px; font-weight: 700; color: #e65100; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
   .ai-box textarea {
     width: 100%;
-    height: 75px;
+    height: 70px;
     padding: 10px;
     border: 1px solid #ffcc80;
     border-radius: var(--radius-md);
@@ -185,19 +135,29 @@
     background: #fff;
     margin-bottom: 10px;
   }
-  .btn-ai {
+  .ai-btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .btn-ai-launch {
+    flex: 1;
     background: #e65100;
     color: #fff;
     border: none;
-    width: 100%;
     padding: 10px;
     border-radius: var(--radius-md);
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 700;
     cursor: pointer;
-    transition: opacity 0.2s;
+    text-align: center;
+    text-decoration: none;
   }
-  .btn-ai:hover { opacity: 0.9; }
+
+  .standard-list { list-style: none; padding: 0; }
+  .standard-list li {
+    padding: 8px 10px;
+    margin: 6px 0;
+    background: #fafafa;
+    border-radius: var(--radius-md);
+    font-size: 14px;
+  }
 
   .interactive-list { list-style: none; padding: 0; margin-bottom: 12px; }
   .interactive-list li {
@@ -273,26 +233,6 @@
     white-space: nowrap;
   }
 
-  .editable-day-list { list-style: none; padding: 0; }
-  .editable-day-list li {
-    padding: 8px 10px;
-    margin: 6px 0;
-    background: #fafafa;
-    border-radius: var(--radius-md);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 14px;
-  }
-  .editable-day-list li input {
-    flex: 1;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 4px 8px;
-    font-size: 13px;
-    margin-right: 8px;
-  }
-
   .flight-list { display: flex; flex-direction: column; gap: 8px; }
   .flight {
     background: #fdf6f0;
@@ -305,29 +245,7 @@
   }
   .flight-info-group { display: flex; flex-direction: column; gap: 2px; flex: 1; }
   .flight-desc { font-weight: 600; color: var(--text-main); }
-  .flight-edit-input {
-    border: 1px dashed var(--primary);
-    background: #fff;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 12px;
-    width: 90%;
-    outline: none;
-  }
   .flight-code { font-weight: 700; color: var(--primary); font-size: 13px; }
-
-  .feedback-section { margin-top: 14px; padding-top: 12px; border-top: 1px dashed #eee; }
-  .feedback-list { list-style: none; padding: 0; font-size: 13px; }
-  .feedback-list li {
-    background: #fff;
-    padding: 8px 12px;
-    border-radius: var(--radius-md);
-    margin: 6px 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border: 1px solid #f0f0f0;
-  }
 
   .xhs-list { list-style: none; padding: 0; }
   .xhs-item {
@@ -369,21 +287,6 @@
 <header>
   <h1>🥢 顺德吃货团 · 4 天 3 晚</h1>
   <p>2026.11.06 – 11.09 · 广州 & 顺德 · Kelly / Fred / Shirley / Wentian</p>
-  
-  <!-- 物理文件备份同步面板（100% 成功，不受任何网络限制） -->
-  <div class="sync-panel">
-    <div class="sync-panel-title">📂 行程文件物理同步（100% 成功）</div>
-    <div class="sync-desc">
-      修改后点<b>导出</b>发到群里；其他人点<b>导入</b>选择该文件，瞬间完美同步！
-    </div>
-    <div class="sync-row">
-      <button class="btn-sync-export" onclick="exportBackupFile()">📤 1. 导出行程文件</button>
-      <button class="btn-sync-import" onclick="triggerImportFile()">📥 2. 导入行程文件</button>
-      <!-- 隐藏的文件选择器 -->
-      <input type="file" id="import-file-input" style="display:none" accept=".json" onchange="importBackupFile(event)">
-    </div>
-    <div class="sync-status" id="sync-status-msg">状态：数据已保存在本机</div>
-  </div>
 </header>
 
 <div class="countdown">
@@ -392,7 +295,7 @@
 </div>
 
 <div class="member-selector">
-  <div class="member-selector-title">👤 当前操作人:</div>
+  <div class="member-selector-title">👤 当前操作人 (用于个人备注签名):</div>
   <div class="avatar-group" id="avatar-group"></div>
 </div>
 
@@ -414,15 +317,18 @@
 </div>
 
 <div class="ai-box">
-  <h3>🤖 行程 AI 助手 · 一键智能规划</h3>
-  <p style="font-size: 12px; color: #795548; margin-bottom: 8px;">支持指定天数，如：<code>Day1 想吃毋米粥，Day2 去清晖园与双皮奶，Day3 想去逢简水乡</code>：</p>
-  <textarea id="ai-input" placeholder="例如：Day1 抵穗吃毋米粥；Day2 清晖园、桑拿鱼、双皮奶；Day3 逢简水乡、均安蒸猪；Day4 陈村早茶"></textarea>
-  <button class="btn-ai" onclick="runAiPlanner()">✨ AI 一键智能规划行程并同步总览</button>
-  <div id="ai-status" style="font-size:11px; color:#e65100; margin-top:6px; text-align:right;"></div>
+  <h3>🤖 AI 行程灵感 · 一键跳转国内大模型</h3>
+  <p style="font-size: 12px; color: #795548; margin-bottom: 8px;">输入你想调整的行程需求（点击后会自动复制文字并唤起对应 App）：</p>
+  <textarea id="ai-input" placeholder="例如：Day1 增加顺德特色糖水铺，Day2 推荐好吃的私房菜..."></textarea>
+  <div class="ai-btn-row">
+    <button class="btn-ai-launch" onclick="launchAI('doubao')">🤖 复制并打开豆包</button>
+    <button class="btn-ai-launch" onclick="launchAI('kimi')">🌙 复制并打开 Kimi</button>
+    <button class="btn-ai-launch" onclick="launchAI('yuanbao')">🐧 复制并打开腾讯元宝</button>
+  </div>
 </div>
 
 <div class="card">
-  <h2>📋 行程总览（实时同步更新）</h2>
+  <h2>📋 行程总览速查</h2>
   <table>
     <thead>
       <tr><th>日期</th><th>主题</th><th>重点安排</th></tr>
@@ -432,10 +338,7 @@
 </div>
 
 <div class="card">
-  <div class="card-header">
-    <h2>✈️ 交通信息与时间安排</h2>
-    <button class="btn-action" id="edit-trans-btn" onclick="toggleEditTransport()">✏️ 编辑班次</button>
-  </div>
+  <h2>✈️ 交通信息与时间安排</h2>
   <div class="flight-list" id="flight-list-container"></div>
 </div>
 
@@ -445,96 +348,56 @@
   <a class="nav-btn" onclick="openAmap('顺德清晖园亚朵酒店')">📍 导航</a></p>
 </div>
 
+<!-- Day 1 ~ Day 4 (纯查阅与一键导航) -->
 <div class="card">
-  <h2>📌 小红书攻略 & 灵感收藏</h2>
-  <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">粘贴小红书笔记链接或打卡灵感，自动解析链接跳转：</p>
-  <ul class="xhs-list" id="xhs-list"></ul>
-  <div class="add-box">
-    <input type="text" id="xhs-title-input" placeholder="笔记标题/景点美食">
-    <input type="text" id="xhs-url-input" placeholder="小红书分享短链/复制整段文本均可">
-    <button onclick="addXhsLink()">添加收藏</button>
-  </div>
+  <h2>Day 1 · 11/6 周五 · 抵达会合</h2>
+  <ul class="standard-list" id="list-day1"></ul>
+</div>
+
+<div class="card">
+  <h2>Day 2 · 11/7 周六 · 大良老城吃逛</h2>
+  <ul class="standard-list" id="list-day2"></ul>
+</div>
+
+<div class="card">
+  <h2>Day 3 · 11/8 周日 · 逢简水乡 + 均安</h2>
+  <ul class="standard-list" id="list-day3"></ul>
+</div>
+
+<div class="card">
+  <h2>Day 4 · 11/9 周一 · 陈村早茶 & 返程</h2>
+  <ul class="standard-list" id="list-day4"></ul>
 </div>
 
 <div class="card">
   <div class="card-header">
-    <h2>Day 1 · 11/6 周五 · 抵达会合</h2>
-    <button class="btn-action" id="btn-edit-day1" onclick="toggleEditDay('day1')">✏️ 修改行程</button>
+    <h2>📝 个人私密备忘与 Amendment <span class="local-badge">Local 专属 · 别人看不到</span></h2>
   </div>
-  <ul class="editable-day-list" id="list-day1"></ul>
-  <div class="feedback-section">
-    <p style="font-size: 12px; font-weight: 700; color: var(--primary);">💬 Day 1 调整建议 / 想法：</p>
-    <ul class="feedback-list" id="fb-day1"></ul>
-    <div class="add-box">
-      <input type="text" id="input-day1" placeholder="提出关于 Day 1 的建议...">
-      <button onclick="addFeedback('day1')">留言</button>
-    </div>
-  </div>
-</div>
-
-<div class="card">
-  <div class="card-header">
-    <h2>Day 2 · 11/7 周六 · 大良老城吃逛</h2>
-    <button class="btn-action" id="btn-edit-day2" onclick="toggleEditDay('day2')">✏️ 修改行程</button>
-  </div>
-  <ul class="editable-day-list" id="list-day2"></ul>
-  <div class="feedback-section">
-    <p style="font-size: 12px; font-weight: 700; color: var(--primary);">💬 Day 2 调整建议 / 想法：</p>
-    <ul class="feedback-list" id="fb-day2"></ul>
-    <div class="add-box">
-      <input type="text" id="input-day2" placeholder="提出关于 Day 2 的建议...">
-      <button onclick="addFeedback('day2')">留言</button>
-    </div>
-  </div>
-</div>
-
-<div class="card">
-  <div class="card-header">
-    <h2>Day 3 · 11/8 周日 · 逢简水乡 + 均安</h2>
-    <button class="btn-action" id="btn-edit-day3" onclick="toggleEditDay('day3')">✏️ 修改行程</button>
-  </div>
-  <ul class="editable-day-list" id="list-day3"></ul>
-  <div class="feedback-section">
-    <p style="font-size: 12px; font-weight: 700; color: var(--primary);">💬 Day 3 调整建议 / 想法：</p>
-    <ul class="feedback-list" id="fb-day3"></ul>
-    <div class="add-box">
-      <input type="text" id="input-day3" placeholder="提出关于 Day 3 的建议...">
-      <button onclick="addFeedback('day3')">留言</button>
-    </div>
-  </div>
-</div>
-
-<div class="card">
-  <div class="card-header">
-    <h2>Day 4 · 11/9 周一 · 陈村早茶 & 返程</h2>
-    <button class="btn-action" id="btn-edit-day4" onclick="toggleEditDay('day4')">✏️ 修改行程</button>
-  </div>
-  <ul class="editable-day-list" id="list-day4"></ul>
-  <div class="feedback-section">
-    <p style="font-size: 12px; font-weight: 700; color: var(--primary);">💬 Day 4 调整建议 / 想法：</p>
-    <ul class="feedback-list" id="fb-day4"></ul>
-    <div class="add-box">
-      <input type="text" id="input-day4" placeholder="提出关于 Day 4 的建议...">
-      <button onclick="addFeedback('day4')">留言</button>
-    </div>
-  </div>
-</div>
-
-<div class="card">
-  <h2>✅ 待办清单</h2>
+  <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">以下内容仅保存在你的当前设备上，其他人打开网页看不到你的私密调整或待办：</p>
   <ul class="interactive-list" id="todo-list"></ul>
   <div class="add-box">
-    <input type="text" id="new-todo-input" placeholder="添加新的待办事项...">
+    <input type="text" id="new-todo-input" placeholder="添加我的本机备忘/行程补充...">
     <button onclick="addTodo()">添加</button>
   </div>
 </div>
 
 <div class="card">
-  <h2>🍽 必吃打卡清单</h2>
+  <h2>🍽 必吃打卡清单 <span class="local-badge">Local 专属</span></h2>
   <div class="tag-container" id="food-list"></div>
   <div class="add-box">
     <input type="text" id="new-food-input" placeholder="添加想吃的美食...">
     <button onclick="addFood()">添加</button>
+  </div>
+</div>
+
+<div class="card">
+  <h2>📌 小红书攻略 & 本地灵感收藏 <span class="local-badge">Local 专属</span></h2>
+  <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">粘贴小红书笔记链接或灵感，仅保存在你的手机上：</p>
+  <ul class="xhs-list" id="xhs-list"></ul>
+  <div class="add-box">
+    <input type="text" id="xhs-title-input" placeholder="笔记标题/景点美食">
+    <input type="text" id="xhs-url-input" placeholder="小红书分享短链/复制整段文本均可">
+    <button onclick="addXhsLink()">添加收藏</button>
   </div>
 </div>
 
@@ -590,7 +453,23 @@
     setTimeout(() => { if (Date.now() - startTime < 2000) window.location.href = webUrl; }, 1500);
   }
 
-  const defaultGlobalState = {
+  function launchAI(appType) {
+    const text = document.getElementById("ai-input").value.trim() || "顺德 4 天 3 晚美食游玩攻略";
+    navigator.clipboard.writeText(text).then(() => {
+      let url = "";
+      if (appType === 'doubao') url = "https://www.doubao.com/";
+      else if (appType === 'kimi') url = "https://kimi.moonshot.cn/";
+      else if (appType === 'yuanbao') url = "https://yuanbao.tencent.com/";
+      
+      alert("✅ 已复制提示词到剪贴板！即将打开 AI 网页版，粘贴即可提问。");
+      window.open(url, '_blank');
+    }).catch(() => {
+      alert("复制失败，请手动复制输入框内的文字。");
+    });
+  }
+
+  // 固定的主行程（直接在这里查阅，统一在 GitHub 修改）
+  const fixedMasterSchedule = {
     daySchedules: {
       day1: [
         "上海二人早班机抵广州，市区小逛 [广州白云国际机场]",
@@ -618,84 +497,40 @@
       { route: "🚄 香港 ⇋ 广州南（2人 · 11/6 去程）", detail: "待补车次 (时间待定)" },
       { route: "🛫 广州 → 新加坡（2人 · 11/9 回程）", detail: "CZ351 (18:50 起飞)" },
       { route: "🛫 广州 → 上海（2人 · 11/9 回程）", detail: "待补航班号 (时间待定)" }
-    ],
+    ]
+  };
+
+  // 用户的 Local 本地私密数据（Amendment / 待办 / 美食 / 小红书收藏）
+  const defaultLocalState = {
     todos: [
       { text: "上海 ⇋ 广州 机票 (2人)", done: false, author: members[0] },
       { text: "香港 ⇋ 广州南 高铁票 (2/人)", done: false, author: members[2] },
-      { text: "清晖园门票提前预约", done: false, author: members[0] },
-      { text: "桑拿鱼餐厅提前订位", done: false, author: members[1] },
-      { text: "均安蒸猪提前预订", done: false, author: members[3] }
+      { text: "清晖园门票提前预约", done: false, author: members[0] }
     ],
     foods: [
       { text: "双皮奶", done: false, author: members[0] },
       { text: "炒牛奶", done: false, author: members[1] },
       { text: "桑拿鱼", done: false, author: members[2] },
-      { text: "均安蒸猪", done: false, author: members[3] },
-      { text: "鱼饼", done: false, author: members[0] },
-      { text: "毋米粥", done: false, author: members[1] },
-      { text: "陈村粉", done: false, author: members[2] },
-      { text: "伦教糕", done: false, author: members[3] }
+      { text: "均安蒸猪", done: false, author: members[3] }
     ],
-    xhsLinks: [],
-    feedbacks: { day1: [], day2: [], day3: [], day4: [] }
+    xhsLinks: []
   };
 
-  let globalState = JSON.parse(localStorage.getItem("shunde_trip_master_v22")) || defaultGlobalState;
-  let dayEditingState = { day1: false, day2: false, day3: false, day4: false };
+  let localState = JSON.parse(localStorage.getItem("shunde_trip_local_v24")) || defaultLocalState;
 
-  // 物理文件导出同步
-  function exportBackupFile() {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(globalState, null, 2));
-    const downloadAnchor = document.createElement('a');
-    downloadAnchor.setAttribute("href", dataStr);
-    downloadAnchor.setAttribute("download", "shunde_trip_backup.json");
-    document.body.appendChild(downloadAnchor);
-    downloadAnchor.click();
-    downloadAnchor.remove();
-    document.getElementById("sync-status-msg").textContent = "✅ 已成功导出备份文件！请发到微信群里。";
-  }
-
-  function triggerImportFile() {
-    document.getElementById("import-file-input").click();
-  }
-
-  function importBackupFile(event) {
-    const fileReader = new FileReader();
-    if (event.target.files && event.target.files[0]) {
-      fileReader.readAsText(event.target.files[0], "UTF-8");
-      fileReader.onload = (e) => {
-        try {
-          const parsed = JSON.parse(e.target.result);
-          if (parsed && parsed.daySchedules) {
-            globalState = parsed;
-            saveLocal();
-            renderAll();
-            document.getElementById("sync-status-msg").textContent = "🎉 成功导入最新行程文件，数据已完全同步！";
-            alert("🎉 行程文件导入成功！所有修改已同步。");
-          } else {
-            alert("❌ 文件格式不正确，请选择正确的备份文件。");
-          }
-        } catch (error) {
-          alert("❌ 解析文件失败，文件可能已损坏。");
-        }
-      };
-    }
-  }
-
-  function saveLocal() {
-    localStorage.setItem("shunde_trip_master_v22", JSON.stringify(globalState));
+  function saveLocalState() {
+    localStorage.setItem("shunde_trip_local_v24", JSON.stringify(localState));
   }
 
   function renderAll() {
-    renderDaySchedules();
+    renderFixedSchedules();
     renderTransports();
     renderTodos();
     renderFoods();
     renderXhs();
-    renderFeedbacks();
   }
 
-  function renderDaySchedules() {
+  function renderFixedSchedules() {
     const dayMeta = [
       { key: 'day1', date: '11/6 五', title: '抵达会合' },
       { key: 'day2', date: '11/7 六', title: '大良老城' },
@@ -709,37 +544,22 @@
     dayMeta.forEach(meta => {
       const day = meta.key;
       const list = document.getElementById(`list-${day}`);
-      const isEditing = dayEditingState[day];
       list.innerHTML = "";
 
       let dayHighlights = [];
-      const currentDayItems = globalState.daySchedules[day] || [];
+      const currentDayItems = fixedMasterSchedule.daySchedules[day] || [];
 
-      currentDayItems.forEach((itemText, idx) => {
+      currentDayItems.forEach(itemText => {
         let cleanText = itemText.replace(/\[.*?\]/g, "").trim();
         if (cleanText) dayHighlights.push(cleanText);
 
         const li = document.createElement("li");
-        if (isEditing) {
-          li.innerHTML = `
-            <input type="text" value="${itemText}" id="edit-in-${day}-${idx}">
-            <span class="del-btn" onclick="removeDayItem('${day}', ${idx})">✕</span>
-          `;
-        } else {
-          let formattedText = itemText.replace(/\[(.*?)\]/g, (match, p1) => {
-            return `<a class="nav-btn" onclick="openAmap('${p1}')">📍 ${p1}</a>`;
-          });
-          li.innerHTML = `<span>• ${formattedText}</span>`;
-        }
+        let formattedText = itemText.replace(/\[(.*?)\]/g, (match, p1) => {
+          return `<a class="nav-btn" onclick="openAmap('${p1}')">📍 ${p1}</a>`;
+        });
+        li.innerHTML = `<span>• ${formattedText}</span>`;
         list.appendChild(li);
       });
-
-      if (isEditing) {
-        const addBtnLi = document.createElement("li");
-        addBtnLi.style.justifyContent = "center";
-        addBtnLi.innerHTML = `<button class="btn-action" style="width:100%;" onclick="addDayItem('${day}')">+ 添加一行行程</button>`;
-        list.appendChild(addBtnLi);
-      }
 
       const tr = document.createElement("tr");
       tr.innerHTML = `
@@ -751,129 +571,20 @@
     });
   }
 
-  function toggleEditDay(day) {
-    const btn = document.getElementById(`btn-edit-${day}`);
-    if (!dayEditingState[day]) {
-      dayEditingState[day] = true;
-      btn.textContent = "💾 保存行程";
-    } else {
-      const newItems = [];
-      globalState.daySchedules[day].forEach((_, idx) => {
-        const input = document.getElementById(`edit-in-${day}-${idx}`);
-        if (input && input.value.trim()) {
-          newItems.push(input.value.trim());
-        }
-      });
-      globalState.daySchedules[day] = newItems;
-      dayEditingState[day] = false;
-      btn.textContent = "✏️ 修改行程";
-      saveLocal();
-    }
-    renderDaySchedules();
-  }
-
-  function addDayItem(day) {
-    if(!globalState.daySchedules[day]) globalState.daySchedules[day] = [];
-    globalState.daySchedules[day].push("新行程项");
-    renderDaySchedules();
-  }
-
-  function removeDayItem(day, idx) {
-    globalState.daySchedules[day].splice(idx, 1);
-    renderDaySchedules();
-  }
-
-  function runAiPlanner() {
-    const rawInput = document.getElementById("ai-input").value.trim();
-    if (!rawInput) { alert("请先输入大家想去的地方或包含 Day1/Day2 的规划建议哦！"); return; }
-
-    const status = document.getElementById("ai-status");
-    status.textContent = "🤖 AI 正在智能解析天数并规划归类...";
-
-    let newSchedules = { day1: [], day2: [], day3: [], day4: [] };
-    const sentences = rawInput.split(/[;；\n]+/).filter(x => x.trim().length > 0);
-
-    sentences.forEach(sentence => {
-      let targetDay = null;
-      if (/day\s*1|第一天|11\/6|11月6/i.test(sentence)) targetDay = "day1";
-      else if (/day\s*2|第二天|11\/7|11月7/i.test(sentence)) targetDay = "day2";
-      else if (/day\s*3|第三天|11\/8|11月8/i.test(sentence)) targetDay = "day3";
-      else if (/day\s*4|第四天|11\/9|11月9/i.test(sentence)) targetDay = "day4";
-
-      let cleanContent = sentence.replace(/day\s*[1-4]|第一天|第二天|第三天|第四天/gi, "").trim();
-
-      if (targetDay) {
-        newSchedules[targetDay].push(`${cleanContent} [${cleanContent.slice(0,6)}]`);
-      } else {
-        if (cleanContent.includes("水乡") || cleanContent.includes("均安") || cleanContent.includes("蒸猪")) {
-          newSchedules.day3.push(`${cleanContent} [${cleanContent}]`);
-        } else if (cleanContent.includes("陈村") || cleanContent.includes("手信") || cleanContent.includes("返程")) {
-          newSchedules.day4.push(`${cleanContent} [${cleanContent}]`);
-        } else if (cleanContent.includes("夜宵") || cleanContent.includes("抵达") || cleanContent.includes("会合")) {
-          newSchedules.day1.push(`${cleanContent} [${cleanContent}]`);
-        } else {
-          newSchedules.day2.push(`${cleanContent} [${cleanContent}]`);
-        }
-      }
-    });
-
-    if(newSchedules.day1.length === 0) newSchedules.day1 = globalState.daySchedules.day1;
-    if(newSchedules.day2.length === 0) newSchedules.day2 = globalState.daySchedules.day2;
-    if(newSchedules.day3.length === 0) newSchedules.day3 = globalState.daySchedules.day3;
-    if(newSchedules.day4.length === 0) newSchedules.day4 = globalState.daySchedules.day4;
-
-    setTimeout(() => {
-      globalState.daySchedules = newSchedules;
-      saveLocal();
-      renderDaySchedules();
-      status.innerHTML = `✨ 已由 <span style="font-weight:bold;">${currentMember.name}</span> AI 精准更新！(请点击上方“📤 导出行程文件”发到微信群)`;
-    }, 600);
-  }
-
-  let isEditingTrans = false;
   function renderTransports() {
     const container = document.getElementById("flight-list-container");
     container.innerHTML = "";
-    (globalState.transports || []).forEach((item, index) => {
+    fixedMasterSchedule.transports.forEach(item => {
       const div = document.createElement("div");
       div.className = "flight";
-      if (isEditingTrans) {
-        div.innerHTML = `
-          <div class="flight-info-group">
-            <span class="flight-desc">${item.route}</span>
-            <input type="text" class="flight-edit-input" id="trans-input-${index}" value="${item.detail}">
-          </div>
-        `;
-      } else {
-        div.innerHTML = `
-          <div class="flight-info-group">
-            <span class="flight-desc">${item.route}</span>
-            <span class="flight-code">${item.detail}</span>
-          </div>
-        `;
-      }
+      div.innerHTML = `
+        <div class="flight-info-group">
+          <span class="flight-desc">${item.route}</span>
+          <span class="flight-code">${item.detail}</span>
+        </div>
+      `;
       container.appendChild(div);
     });
-  }
-
-  function toggleEditTransport() {
-    const btn = document.getElementById("edit-trans-btn");
-    if (!isEditingTrans) {
-      isEditingTrans = true;
-      btn.textContent = "💾 保存修改";
-      renderTransports();
-    } else {
-      globalState.transports.forEach((item, index) => {
-        const input = document.getElementById(`trans-input-${index}`);
-        if (input && input.value.trim()) {
-          item.detail = input.value.trim();
-        }
-      });
-      isEditingTrans = false;
-      btn.textContent = "✏️ 编辑班次";
-      saveLocal();
-      renderTransports();
-    }
   }
 
   function getUserBadgeHtml(author) {
@@ -884,7 +595,7 @@
   function renderTodos() {
     const list = document.getElementById("todo-list");
     list.innerHTML = "";
-    (globalState.todos || []).forEach((item, index) => {
+    (localState.todos || []).forEach((item, index) => {
       const li = document.createElement("li");
       if (item.done) li.classList.add("completed");
       li.innerHTML = `
@@ -903,29 +614,29 @@
   function addTodo() {
     const input = document.getElementById("new-todo-input");
     if (input.value.trim()) {
-      globalState.todos.push({ text: input.value.trim(), done: false, author: currentMember });
+      localState.todos.push({ text: input.value.trim(), done: false, author: currentMember });
       input.value = "";
-      saveLocal();
+      saveLocalState();
       renderTodos();
     }
   }
 
   function toggleTodo(index) {
-    globalState.todos[index].done = !globalState.todos[index].done;
-    saveLocal();
+    localState.todos[index].done = !localState.todos[index].done;
+    saveLocalState();
     renderTodos();
   }
 
   function deleteTodo(index) {
-    globalState.todos.splice(index, 1);
-    saveLocal();
+    localState.todos.splice(index, 1);
+    saveLocalState();
     renderTodos();
   }
 
   function renderFoods() {
     const container = document.getElementById("food-list");
     container.innerHTML = "";
-    (globalState.foods || []).forEach((item, index) => {
+    (localState.foods || []).forEach((item, index) => {
       const div = document.createElement("div");
       div.className = `tag-wrapper ${item.done ? 'completed' : ''}`;
       div.innerHTML = `
@@ -940,22 +651,22 @@
   function addFood() {
     const input = document.getElementById("new-food-input");
     if (input.value.trim()) {
-      globalState.foods.push({ text: input.value.trim(), done: false, author: currentMember });
+      localState.foods.push({ text: input.value.trim(), done: false, author: currentMember });
       input.value = "";
-      saveLocal();
+      saveLocalState();
       renderFoods();
     }
   }
 
   function toggleFood(index) {
-    globalState.foods[index].done = !globalState.foods[index].done;
-    saveLocal();
+    localState.foods[index].done = !localState.foods[index].done;
+    saveLocalState();
     renderFoods();
   }
 
   function deleteFood(index) {
-    globalState.foods.splice(index, 1);
-    saveLocal();
+    localState.foods.splice(index, 1);
+    saveLocalState();
     renderFoods();
   }
 
@@ -973,7 +684,7 @@
   function renderXhs() {
     const list = document.getElementById("xhs-list");
     list.innerHTML = "";
-    (globalState.xhsLinks || []).forEach((item, index) => {
+    (localState.xhsLinks || []).forEach((item, index) => {
       const li = document.createElement("li");
       li.className = "xhs-item";
       li.innerHTML = `
@@ -996,10 +707,10 @@
     if (rawUrl) {
       let cleanUrl = extractUrl(rawUrl);
       if (!rawTitle) rawTitle = "小红书攻略灵感";
-      if(!globalState.xhsLinks) globalState.xhsLinks = [];
-      globalState.xhsLinks.push({ title: rawTitle, url: cleanUrl, author: currentMember });
+      if(!localState.xhsLinks) localState.xhsLinks = [];
+      localState.xhsLinks.push({ title: rawTitle, url: cleanUrl, author: currentMember });
       titleInput.value = ""; urlInput.value = "";
-      saveLocal();
+      saveLocalState();
       renderXhs();
     } else {
       alert("请填写链接或小红书分享文本哦！");
@@ -1007,45 +718,9 @@
   }
 
   function deleteXhs(index) {
-    globalState.xhsLinks.splice(index, 1);
-    saveLocal();
+    localState.xhsLinks.splice(index, 1);
+    saveLocalState();
     renderXhs();
-  }
-
-  function renderFeedbacks() {
-    ['day1', 'day2', 'day3', 'day4'].forEach(day => {
-      const list = document.getElementById(`fb-${day}`);
-      list.innerHTML = "";
-      ((globalState.feedbacks && globalState.feedbacks[day]) || []).forEach((item, index) => {
-        const li = document.createElement("li");
-        li.innerHTML = `
-          <span>${item.text}</span>
-          <div style="display:flex; align-items:center; gap:6px;">
-            ${getUserBadgeHtml(item.author)}
-            <span class="del-btn" onclick="deleteFeedback('${day}', ${index})">✕</span>
-          </div>
-        `;
-        list.appendChild(li);
-      });
-    });
-  }
-
-  function addFeedback(day) {
-    const input = document.getElementById(`input-${day}`);
-    if (input.value.trim()) {
-      if (!globalState.feedbacks) globalState.feedbacks = { day1: [], day2: [], day3: [], day4: [] };
-      if (!globalState.feedbacks[day]) globalState.feedbacks[day] = [];
-      globalState.feedbacks[day].push({ text: input.value.trim(), author: currentMember });
-      input.value = "";
-      saveLocal();
-      renderFeedbacks();
-    }
-  }
-
-  function deleteFeedback(day, index) {
-    globalState.feedbacks[day].splice(index, 1);
-    saveLocal();
-    renderFeedbacks();
   }
 
   window.onload = function() {
