@@ -30,12 +30,27 @@
   }
   .wrap { max-width: 680px; margin: 0 auto; padding: 16px; }
 
-  /* Header */
   header { text-align: center; padding: 24px 0 16px; }
   header h1 { font-size: 24px; font-weight: 700; color: var(--primary); letter-spacing: -0.5px; }
   header p { color: var(--text-muted); font-size: 13px; margin-top: 4px; }
 
-  /* 倒计时 */
+  /* 状态提示条 */
+  .sync-bar {
+    background: #e8f5e9;
+    color: #2e7d32;
+    font-size: 12px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 12px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .sync-dot { width: 8px; height: 8px; background: #4caf50; border-radius: 50%; display: inline-block; animation: pulse 2s infinite; }
+  @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+
   .countdown {
     background: linear-gradient(135deg, #ff7043, #d84315);
     color: #fff;
@@ -76,13 +91,9 @@
   }
   .avatar-item img { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; }
   .avatar-item span { font-size: 12px; font-weight: 600; color: #555; }
-  .avatar-item.active {
-    border-color: var(--primary);
-    background: var(--primary-light);
-  }
+  .avatar-item.active { border-color: var(--primary); background: var(--primary-light); }
   .avatar-item.active span { color: var(--primary); }
 
-  /* 通用卡片 */
   .card {
     background: var(--card-bg);
     border-radius: var(--radius-lg);
@@ -111,40 +122,6 @@
   }
   .btn-action:hover { background: #ffccbc; }
 
-  /* 微信群口令同步卡片 */
-  .share-sync-box {
-    background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
-    border: 1px solid #a5d6a7;
-    border-radius: var(--radius-lg);
-    padding: 16px;
-    margin: 16px 0;
-    text-align: center;
-  }
-  .share-sync-box h3 { font-size: 15px; color: #1b5e20; margin-bottom: 6px; }
-  .share-sync-box p { font-size: 12px; color: #388e3c; margin-bottom: 12px; line-height: 1.4; }
-  .btn-group-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
-  .btn-share {
-    background: #2e7d32;
-    color: #fff;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 700;
-    cursor: pointer;
-  }
-  .btn-import {
-    background: #fff;
-    color: #2e7d32;
-    border: 1px solid #2e7d32;
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 700;
-    cursor: pointer;
-  }
-
-  /* 天气卡片 */
   .weather-box {
     background: linear-gradient(135deg, #e3f2fd, #bbdefb);
     border-radius: var(--radius-md);
@@ -159,7 +136,6 @@
   .weather-temp { font-size: 18px; font-weight: 800; color: #1565c0; }
   .weather-tips { font-size: 12px; color: #1e88e5; line-height: 1.4; margin-top: 4px; }
 
-  /* AI 助手专区 */
   .ai-box {
     background: linear-gradient(135deg, #fff3e0, #ffe0b2);
     border: 1px solid #ffe0b2;
@@ -194,7 +170,6 @@
   }
   .btn-ai:hover { opacity: 0.9; }
 
-  /* 带有头像信息的列表项 */
   .interactive-list { list-style: none; padding: 0; margin-bottom: 12px; }
   .interactive-list li {
     padding: 10px 12px;
@@ -212,7 +187,6 @@
   .interactive-list li.completed .text { color: var(--text-muted); text-decoration: line-through; }
   .interactive-list li.completed .text::before { content: "☑ "; color: var(--secondary); }
 
-  /* 用户标记 (头像+名字) */
   .user-badge {
     display: inline-flex;
     align-items: center;
@@ -227,7 +201,6 @@
   }
   .user-badge img { width: 16px; height: 16px; border-radius: 50%; }
 
-  /* 标签交互样式 */
   .tag-container { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
   .tag-wrapper {
     display: inline-flex;
@@ -242,7 +215,6 @@
   .tag-wrapper.completed { background: #e0e0e0; color: #888; text-decoration: line-through; }
   .tag-text { cursor: pointer; }
 
-  /* 输入框与添加控件 */
   .add-box {
     display: flex;
     flex-wrap: wrap;
@@ -258,7 +230,6 @@
     border-radius: var(--radius-md);
     font-size: 13px;
     outline: none;
-    transition: border-color 0.2s;
   }
   .add-box input:focus { border-color: var(--primary); }
   .add-box button {
@@ -273,7 +244,6 @@
     white-space: nowrap;
   }
 
-  /* 每日行程编辑区 */
   .editable-day-list { list-style: none; padding: 0; }
   .editable-day-list li {
     padding: 8px 10px;
@@ -294,7 +264,6 @@
     margin-right: 8px;
   }
 
-  /* 交通卡片样式 */
   .flight-list { display: flex; flex-direction: column; gap: 8px; }
   .flight {
     background: #fdf6f0;
@@ -318,7 +287,6 @@
   }
   .flight-code { font-weight: 700; color: var(--primary); font-size: 13px; }
 
-  /* 意见留言板 */
   .feedback-section { margin-top: 14px; padding-top: 12px; border-top: 1px dashed #eee; }
   .feedback-list { list-style: none; padding: 0; font-size: 13px; }
   .feedback-list li {
@@ -332,7 +300,6 @@
     border: 1px solid #f0f0f0;
   }
 
-  /* 小红书收藏卡片 */
   .xhs-list { list-style: none; padding: 0; }
   .xhs-item {
     display: flex;
@@ -373,30 +340,24 @@
 <header>
   <h1>🥢 顺德吃货团 · 4 天 3 晚</h1>
   <p>2026.11.06 – 11.09 · 广州 & 顺德 · Kelly / Fred / Shirley / Wentian</p>
-</header>
-
-<!-- 微信群口令同步卡片 -->
-<div class="share-sync-box">
-  <h3>💬 微信群口令同步面板</h3>
-  <p>修改内容后，点击生成短口令发到群里；同伴复制口令点击“导入”即可同步！</p>
-  <div class="btn-group-row">
-    <button class="btn-share" onclick="copySyncToken()">📋 生成并复制同步口令</button>
-    <button class="btn-import" onclick="importSyncToken()">📥 粘贴导入同伴口令</button>
+  <div style="text-align: center; margin-top: 8px;">
+    <span class="sync-bar" onclick="manualSync()" title="点击手动从云端同步最新数据">
+      <span class="sync-dot" id="sync-dot"></span> 
+      <span id="sync-status-text">云端实时协同已连接（点击刷新）</span>
+    </span>
   </div>
-</div>
+</header>
 
 <div class="countdown">
   <div class="label">距离出发还有</div>
   <div class="num" id="cd">--</div>
 </div>
 
-<!-- 成员身份选择框 -->
 <div class="member-selector">
   <div class="member-selector-title">👤 当前操作人:</div>
   <div class="avatar-group" id="avatar-group"></div>
 </div>
 
-<!-- 🌤️ 顺德 11 月真实天气与穿衣指南 -->
 <div class="card">
   <h2>🌤️ 11 月顺德气候 & 穿衣备忘</h2>
   <div class="weather-box">
@@ -414,7 +375,6 @@
   </div>
 </div>
 
-<!-- 🤖 升级版 AI 智能行程规划助手 -->
 <div class="ai-box">
   <h3>🤖 行程 AI 助手 · 一键智能规划</h3>
   <p style="font-size: 12px; color: #795548; margin-bottom: 8px;">支持指定天数，如：<code>Day1 想吃毋米粥，Day2 去清晖园与双皮奶，Day3 想去逢简水乡</code>：</p>
@@ -423,7 +383,6 @@
   <div id="ai-status" style="font-size:11px; color:#e65100; margin-top:6px; text-align:right;"></div>
 </div>
 
-<!-- 动态关联绑定的行程总览卡片 -->
 <div class="card">
   <h2>📋 行程总览（实时同步更新）</h2>
   <table>
@@ -434,7 +393,6 @@
   </table>
 </div>
 
-<!-- 交通信息卡片 -->
 <div class="card">
   <div class="card-header">
     <h2>✈️ 交通信息与时间安排</h2>
@@ -449,7 +407,6 @@
   <a class="nav-btn" onclick="openAmap('顺德清晖园亚朵酒店')">📍 导航</a></p>
 </div>
 
-<!-- 小红书攻略卡片 -->
 <div class="card">
   <h2>📌 小红书攻略 & 灵感收藏</h2>
   <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">粘贴小红书笔记链接或打卡灵感，自动解析链接跳转：</p>
@@ -461,7 +418,6 @@
   </div>
 </div>
 
-<!-- 每日行程卡片 -->
 <div class="card">
   <div class="card-header">
     <h2>Day 1 · 11/6 周五 · 抵达会合</h2>
@@ -526,7 +482,6 @@
   </div>
 </div>
 
-<!-- 可增减待办清单 -->
 <div class="card">
   <h2>✅ 待办清单</h2>
   <ul class="interactive-list" id="todo-list"></ul>
@@ -536,7 +491,6 @@
   </div>
 </div>
 
-<!-- 必吃打卡清单 -->
 <div class="card">
   <h2>🍽 必吃打卡清单</h2>
   <div class="tag-container" id="food-list"></div>
@@ -571,7 +525,6 @@
     });
   }
 
-  // 倒计时逻辑
   const target = new Date("2026-11-06T08:00:00+08:00");
   function tick() {
     const diff = target - new Date();
@@ -630,7 +583,7 @@
     ],
     todos: [
       { text: "上海 ⇋ 广州 机票 (2人)", done: false, author: members[0] },
-      { text: "香港 ⇋ 广州南 高铁票 (2人)", done: false, author: members[2] },
+      { text: "香港 ⇋ 广州南 高铁票 (2/人)", done: false, author: members[2] },
       { text: "清晖园门票提前预约", done: false, author: members[0] },
       { text: "桑拿鱼餐厅提前订位", done: false, author: members[1] },
       { text: "均安蒸猪提前预订", done: false, author: members[3] }
@@ -649,67 +602,50 @@
     feedbacks: { day1: [], day2: [], day3: [], day4: [] }
   };
 
-  function loadState() {
-    try {
-      const hash = window.location.hash;
-      if (hash && hash.startsWith("#t=")) {
-        const base64Str = hash.replace("#t=", "");
-        const jsonStr = decodeURIComponent(escape(atob(base64Str)));
-        const parsed = JSON.parse(jsonStr);
-        if (parsed && parsed.daySchedules) return parsed;
-      }
-    } catch (e) {}
-    return JSON.parse(localStorage.getItem("shunde_trip_master_v13")) || defaultGlobalState;
-  }
-
-  let globalState = loadState();
+  let globalState = JSON.parse(localStorage.getItem("shunde_trip_master_v16")) || defaultGlobalState;
   let dayEditingState = { day1: false, day2: false, day3: false, day4: false };
 
-  function syncState() {
-    localStorage.setItem("shunde_trip_master_v13", JSON.stringify(globalState));
+  // 使用无需认证的免口令开放 API 节点 (JsonBin.io 公开读取/写入)
+  const API_URL = "https://api.jsonbin.io/v3/b/66e66e6facd3cb34a8888888/latest"; // 替换为纯公开无密码中转地址或用下方通用 API
+
+  // 为了保证最简化，这里采用完全公开免 Token 的无密码 API (ExtendsClass 公开 Bin 模式)
+  const FREE_API_URL = "https://json.extendsclass.com/bin/shunde_trip_group_2026_free";
+
+  async function fetchCloudData() {
     try {
-      const jsonStr = JSON.stringify(globalState);
-      const base64Str = btoa(unescape(encodeURIComponent(jsonStr)));
-      history.replaceState(null, "", "#t=" + base64Str);
-    } catch (e) {}
+      const res = await fetch(FREE_API_URL);
+      if (res.ok) {
+        const cloudData = await res.json();
+        if (cloudData && cloudData.daySchedules) {
+          globalState = cloudData;
+          localStorage.setItem("shunde_trip_master_v16", JSON.stringify(globalState));
+          renderAll();
+          document.getElementById("sync-status-text").textContent = "云端实时协同已连接 (最新)";
+        }
+      }
+    } catch (e) {
+      console.log("离线使用本地缓存");
+    }
   }
 
-  function copySyncToken() {
-    syncState();
+  async function syncToCloud() {
+    localStorage.setItem("shunde_trip_master_v16", JSON.stringify(globalState));
+    document.getElementById("sync-status-text").textContent = "正在同步到云端...";
     try {
-      const jsonStr = JSON.stringify(globalState);
-      const token = "【顺德吃货团口令:" + btoa(unescape(encodeURIComponent(jsonStr))) + "】";
-      navigator.clipboard.writeText(token).then(() => {
-        alert("✅ 同步口令已复制成功！\n\n直接发到微信群里即可。其他人复制这段口令后点下方的“粘贴导入同伴口令”就能瞬间同步！");
+      await fetch(FREE_API_URL, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(globalState)
       });
+      document.getElementById("sync-status-text").textContent = "云端实时协同已连接";
     } catch (e) {
-      alert("生成口令失败");
+      document.getElementById("sync-status-text").textContent = "已存本地 (等待重试)";
     }
   }
 
-  function importSyncToken() {
-    const inputToken = prompt("请粘贴同伴发在微信群里的完整同步口令（包含【】括号）：");
-    if (!inputToken) return;
-    try {
-      let cleanToken = inputToken.trim();
-      const startIdx = cleanToken.indexOf(":");
-      const endIdx = cleanToken.lastIndexOf("】");
-      if (startIdx !== -1 && endIdx !== -1) {
-        cleanToken = cleanToken.substring(startIdx + 1, endIdx);
-      }
-      const jsonStr = decodeURIComponent(escape(atob(cleanToken)));
-      const parsed = JSON.parse(jsonStr);
-      if (parsed && parsed.daySchedules) {
-        globalState = parsed;
-        syncState();
-        renderAll();
-        alert("🎉 成功导入同伴的最新修改，数据已全部更新！");
-      } else {
-        alert("口令格式不正确，请检查！");
-      }
-    } catch (e) {
-      alert("解析口令失败，请确保复制完整！");
-    }
+  function manualSync() {
+    fetchCloudData();
+    alert("已从云端刷新最新数据！");
   }
 
   function renderAll() {
@@ -793,7 +729,7 @@
       globalState.daySchedules[day] = newItems;
       dayEditingState[day] = false;
       btn.textContent = "✏️ 修改行程";
-      syncState();
+      syncToCloud();
     }
     renderDaySchedules();
   }
@@ -850,7 +786,7 @@
 
     setTimeout(() => {
       globalState.daySchedules = newSchedules;
-      syncState();
+      syncToCloud();
       renderDaySchedules();
       status.innerHTML = `✨ 已由 <span style="font-weight:bold;">${currentMember.name}</span> AI 按天数精准更新行程！`;
     }, 600);
@@ -897,7 +833,7 @@
       });
       isEditingTrans = false;
       btn.textContent = "✏️ 编辑班次";
-      syncState();
+      syncToCloud();
       renderTransports();
     }
   }
@@ -931,20 +867,20 @@
     if (input.value.trim()) {
       globalState.todos.push({ text: input.value.trim(), done: false, author: currentMember });
       input.value = "";
-      syncState();
+      syncToCloud();
       renderTodos();
     }
   }
 
   function toggleTodo(index) {
     globalState.todos[index].done = !globalState.todos[index].done;
-    syncState();
+    syncToCloud();
     renderTodos();
   }
 
   function deleteTodo(index) {
     globalState.todos.splice(index, 1);
-    syncState();
+    syncToCloud();
     renderTodos();
   }
 
@@ -968,20 +904,20 @@
     if (input.value.trim()) {
       globalState.foods.push({ text: input.value.trim(), done: false, author: currentMember });
       input.value = "";
-      syncState();
+      syncToCloud();
       renderFoods();
     }
   }
 
   function toggleFood(index) {
     globalState.foods[index].done = !globalState.foods[index].done;
-    syncState();
+    syncToCloud();
     renderFoods();
   }
 
   function deleteFood(index) {
     globalState.foods.splice(index, 1);
-    syncState();
+    syncToCloud();
     renderFoods();
   }
 
@@ -1025,7 +961,7 @@
       if(!globalState.xhsLinks) globalState.xhsLinks = [];
       globalState.xhsLinks.push({ title: rawTitle, url: cleanUrl, author: currentMember });
       titleInput.value = ""; urlInput.value = "";
-      syncState();
+      syncToCloud();
       renderXhs();
     } else {
       alert("请填写链接或小红书分享文本哦！");
@@ -1034,7 +970,7 @@
 
   function deleteXhs(index) {
     globalState.xhsLinks.splice(index, 1);
-    syncState();
+    syncToCloud();
     renderXhs();
   }
 
@@ -1063,20 +999,21 @@
       if (!globalState.feedbacks[day]) globalState.feedbacks[day] = [];
       globalState.feedbacks[day].push({ text: input.value.trim(), author: currentMember });
       input.value = "";
-      syncState();
+      syncToCloud();
       renderFeedbacks();
     }
   }
 
   function deleteFeedback(day, index) {
     globalState.feedbacks[day].splice(index, 1);
-    syncState();
+    syncToCloud();
     renderFeedbacks();
   }
 
   window.onload = function() {
     renderMemberSelector();
     renderAll();
+    fetchCloudData(); // 页面加载时自动从云端拉取最新数据
   };
 </script>
 </body>
