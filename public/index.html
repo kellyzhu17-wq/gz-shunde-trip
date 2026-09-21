@@ -58,21 +58,23 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
   }
   .member-selector-title { font-size: 13px; font-weight: 600; color: var(--text-muted); }
-  .avatar-group { display: flex; gap: 8px; }
+  .avatar-group { display: flex; gap: 8px; flex-wrap: wrap; }
   .avatar-item {
     display: flex;
     align-items: center;
-    gap: 4px;
-    padding: 4px 8px;
+    gap: 6px;
+    padding: 4px 10px;
     border-radius: 20px;
     border: 2px solid transparent;
     cursor: pointer;
     background: #f5f5f5;
     transition: all 0.2s ease;
   }
-  .avatar-item img { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; }
+  .avatar-item img { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; }
   .avatar-item span { font-size: 12px; font-weight: 600; color: #555; }
   .avatar-item.active {
     border-color: var(--primary);
@@ -109,6 +111,41 @@
   }
   .btn-action:hover { background: #ffccbc; }
 
+  /* AI 助手专区 */
+  .ai-box {
+    background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+    border: 1px solid #ffe0b2;
+    border-radius: var(--radius-lg);
+    padding: 18px;
+    margin: 16px 0;
+  }
+  .ai-box h3 { font-size: 15px; font-weight: 700; color: #e65100; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+  .ai-box textarea {
+    width: 100%;
+    height: 70px;
+    padding: 10px;
+    border: 1px solid #ffcc80;
+    border-radius: var(--radius-md);
+    font-size: 13px;
+    outline: none;
+    resize: none;
+    background: #fff;
+    margin-bottom: 10px;
+  }
+  .btn-ai {
+    background: #e65100;
+    color: #fff;
+    border: none;
+    width: 100%;
+    padding: 10px;
+    border-radius: var(--radius-md);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .btn-ai:hover { opacity: 0.9; }
+
   /* 带有头像信息的列表项 */
   .interactive-list { list-style: none; padding: 0; margin-bottom: 12px; }
   .interactive-list li {
@@ -133,7 +170,7 @@
     align-items: center;
     gap: 4px;
     background: #fff;
-    padding: 2px 6px;
+    padding: 2px 8px;
     border-radius: 12px;
     border: 1px solid #eee;
     font-size: 11px;
@@ -180,6 +217,27 @@
     cursor: pointer;
   }
 
+  /* 每日行程编辑区 */
+  .editable-day-list { list-style: none; padding: 0; }
+  .editable-day-list li {
+    padding: 8px 10px;
+    margin: 6px 0;
+    background: #fafafa;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 14px;
+  }
+  .editable-day-list li input {
+    flex: 1;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 13px;
+    margin-right: 8px;
+  }
+
   /* 交通卡片 */
   .flight-list { display: flex; flex-direction: column; gap: 8px; }
   .flight {
@@ -198,13 +256,14 @@
   .feedback-section { margin-top: 14px; padding-top: 12px; border-top: 1px dashed #eee; }
   .feedback-list { list-style: none; padding: 0; font-size: 13px; }
   .feedback-list li {
-    background: #fafafa;
+    background: #fff;
     padding: 8px 12px;
     border-radius: var(--radius-md);
     margin: 6px 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border: 1px solid #f0f0f0;
   }
 
   /* 小红书收藏卡片 */
@@ -239,8 +298,6 @@
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
   th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--border-color); }
   th { color: var(--primary); font-weight: 700; }
-  ul { padding-left: 18px; }
-  li { margin: 6px 0; font-size: 14px; }
   .del-btn { color: #ccc; cursor: pointer; font-size: 14px; padding: 0 4px; }
   .del-btn:hover { color: var(--primary); }
   footer { text-align: center; color: var(--text-muted); font-size: 12px; padding: 24px 0; }
@@ -250,7 +307,7 @@
 <div class="wrap">
 <header>
   <h1>🥢 顺德吃货团 · 4 天 3 晚</h1>
-  <p>2026.11.06 – 11.09 · 广州 & 顺德 · 4 人成行</p>
+  <p>2026.11.06 – 11.09 · 广州 & 顺德 · Kelly / Fred / Shirley / Wentian</p>
 </header>
 
 <div class="countdown">
@@ -262,6 +319,15 @@
 <div class="member-selector">
   <div class="member-selector-title">👤 当前操作人:</div>
   <div class="avatar-group" id="avatar-group"></div>
+</div>
+
+<!-- 🤖 AI 行程一键生成助手 -->
+<div class="ai-box">
+  <h3>🤖 行程 AI 助手 · 一键智能规划</h3>
+  <p style="font-size: 12px; color: #795548; margin-bottom: 8px;">集合大家想去的地方/想吃的美食（用逗号或空格隔开），AI 将自动按顺德地理动线生成行程：</p>
+  <textarea id="ai-input" placeholder="例如：清晖园, 逢简水乡, 渔人码头, 顺峰山公园, 金榜上街双皮奶, 均安蒸猪, 细妹牛奶"></textarea>
+  <button class="btn-ai" onclick="runAiPlanner()">✨ AI 一键智能规划行程</button>
+  <div id="ai-status" style="font-size:11px; color:#e65100; margin-top:6px; text-align:right;"></div>
 </div>
 
 <!-- 路线纵览与地图卡片 -->
@@ -329,14 +395,13 @@
   </div>
 </div>
 
-<!-- 每日行程 + 意见表达区 -->
+<!-- 每日行程卡片（支持动态编辑修改） -->
 <div class="card">
-  <h2>Day 1 · 11/6 周五 · 抵达会合</h2>
-  <ul>
-    <li>上海二人早班机抵广州，市区小逛 <a class="nav-btn" onclick="openAmap('广州白云国际机场')">📍 白云机场</a></li>
-    <li>香港二人晚间高铁抵穗 → 顺德大良 <a class="nav-btn" onclick="openAmap('广州南站')">📍 广州南站</a></li>
-    <li>夜宵四人会合：毋米粥 / 牛乳糖水 <a class="nav-btn" onclick="openAmap('顺德大良华盖路步行街')">📍 华盖路</a></li>
-  </ul>
+  <div class="card-header">
+    <h2>Day 1 · 11/6 周五 · 抵达会合</h2>
+    <button class="btn-action" id="btn-edit-day1" onclick="toggleEditDay('day1')">✏️ 修改行程</button>
+  </div>
+  <ul class="editable-day-list" id="list-day1"></ul>
   <div class="feedback-section">
     <p style="font-size: 12px; font-weight: 700; color: var(--primary);">💬 Day 1 调整建议 / 想法：</p>
     <ul class="feedback-list" id="fb-day1"></ul>
@@ -348,12 +413,11 @@
 </div>
 
 <div class="card">
-  <h2>Day 2 · 11/7 周六 · 大良老城吃逛</h2>
-  <ul>
-    <li>早茶：华盖路老字号 <a class="nav-btn" onclick="openAmap('顺德大良华盖路步行街')">📍 导航</a></li>
-    <li>上午：清晖园（提前预约门票） <a class="nav-btn" onclick="openAmap('顺德清晖园')">📍 导航</a></li>
-    <li>午晚餐：炒牛奶、桑拿鱼（需订位）、双皮奶 <a class="nav-btn" onclick="openAmap('顺德民信老铺')">📍 双皮奶</a></li>
-  </ul>
+  <div class="card-header">
+    <h2>Day 2 · 11/7 周六 · 大良老城吃逛</h2>
+    <button class="btn-action" id="btn-edit-day2" onclick="toggleEditDay('day2')">✏️ 修改行程</button>
+  </div>
+  <ul class="editable-day-list" id="list-day2"></ul>
   <div class="feedback-section">
     <p style="font-size: 12px; font-weight: 700; color: var(--primary);">💬 Day 2 调整建议 / 想法：</p>
     <ul class="feedback-list" id="fb-day2"></ul>
@@ -365,12 +429,11 @@
 </div>
 
 <div class="card">
-  <h2>Day 3 · 11/8 周日 · 逢简水乡 + 均安</h2>
-  <ul>
-    <li>上午：逢简水乡摇橹船、祠堂 <a class="nav-btn" onclick="openAmap('顺德逢简水乡')">📍 导航</a></li>
-    <li>午餐：均安蒸猪（提前预订）、鱼饼 <a class="nav-btn" onclick="openAmap('顺德均安镇')">📍 导航</a></li>
-    <li>晚上回大良夜宵收尾</li>
-  </ul>
+  <div class="card-header">
+    <h2>Day 3 · 11/8 周日 · 逢简水乡 + 均安</h2>
+    <button class="btn-action" id="btn-edit-day3" onclick="toggleEditDay('day3')">✏️ 修改行程</button>
+  </div>
+  <ul class="editable-day-list" id="list-day3"></ul>
   <div class="feedback-section">
     <p style="font-size: 12px; font-weight: 700; color: var(--primary);">💬 Day 3 调整建议 / 想法：</p>
     <ul class="feedback-list" id="fb-day3"></ul>
@@ -382,12 +445,11 @@
 </div>
 
 <div class="card">
-  <h2>Day 4 · 11/9 周一 · 陈村早茶 & 返程</h2>
-  <ul>
-    <li>陈村早茶 + 采购手信（鱼皮角、伦教糕） <a class="nav-btn" onclick="openAmap('顺德陈村镇')">📍 导航</a></li>
-    <li>下午前往白云机场 <a class="nav-btn" onclick="openAmap('广州白云国际机场')">📍 导航</a></li>
-    <li>18:50 CZ351 广州 → 新加坡（2人） & 广州 → 上海（2人）</li>
-  </ul>
+  <div class="card-header">
+    <h2>Day 4 · 11/9 周一 · 陈村早茶 & 返程</h2>
+    <button class="btn-action" id="btn-edit-day4" onclick="toggleEditDay('day4')">✏️ 修改行程</button>
+  </div>
+  <ul class="editable-day-list" id="list-day4"></ul>
   <div class="feedback-section">
     <p style="font-size: 12px; font-weight: 700; color: var(--primary);">💬 Day 4 调整建议 / 想法：</p>
     <ul class="feedback-list" id="fb-day4"></ul>
@@ -418,16 +480,16 @@
   </div>
 </div>
 
-<footer>顺德吃货团 · 实时记录每个人添加的精彩灵感 🎉</footer>
+<footer>顺德吃货团 · Kelly & Fred & Shirley & Wentian 🎉</footer>
 </div>
 
 <script>
-  // 成员设置（使用 DiceBear 虚拟头像 API）
+  // 4位成员设置
   const members = [
-    { id: 'm1', name: '我', avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=Me' },
+    { id: 'm1', name: 'Kelly', avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=Kelly' },
     { id: 'm2', name: 'Fred', avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=Fred' },
-    { id: 'm3', name: '队友A', avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=Alex' },
-    { id: 'm4', name: '队友B', avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=Sarah' }
+    { id: 'm3', name: 'Shirley', avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=Shirley' },
+    { id: 'm4', name: 'Wentian', avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=Wentian' }
   ];
 
   let currentMember = members[0];
@@ -487,12 +549,141 @@
     setTimeout(() => { if (Date.now() - startTime < 2000) window.location.href = webRoute; }, 1500);
   }
 
-  // 默认数据
+  // 默认每日行程数据
+  const defaultDaySchedules = {
+    day1: [
+      "上海二人早班机抵广州，市区小逛 [广州白云国际机场]",
+      "香港二人晚间高铁抵穗 → 顺德大良 [广州南站]",
+      "夜宵四人会合：毋米粥 / 牛乳糖水 [顺德大良华盖路步行街]"
+    ],
+    day2: [
+      "早茶：华盖路老字号 [顺德大良华盖路步行街]",
+      "上午：清晖园（提前预约门票） [顺德清晖园]",
+      "午晚餐：炒牛奶、桑拿鱼（需订位）、双皮奶 [顺德民信老铺]"
+    ],
+    day3: [
+      "上午：逢简水乡摇橹船、祠堂 [顺德逢简水乡]",
+      "午餐：均安蒸猪（提前预订）、鱼饼 [顺德均安镇]",
+      "晚上回大良夜宵收尾"
+    ],
+    day4: [
+      "陈村早茶 + 采购手信（鱼皮角、伦教糕） [顺德陈村镇]",
+      "下午前往白云机场 [广州白云国际机场]",
+      "18:50 CZ351 广州 → 新加坡（2人） & 广州 → 上海（2人）"
+    ]
+  };
+
+  let daySchedules = JSON.parse(localStorage.getItem("shunde_schedules_v1")) || defaultDaySchedules;
+  let dayEditingState = { day1: false, day2: false, day3: false, day4: false };
+
+  // 渲染每日行程
+  function renderDaySchedules() {
+    ['day1', 'day2', 'day3', 'day4'].forEach(day => {
+      const list = document.getElementById(`list-${day}`);
+      const isEditing = dayEditingState[day];
+      list.innerHTML = "";
+
+      daySchedules[day].forEach((itemText, idx) => {
+        const li = document.createElement("li");
+        if (isEditing) {
+          li.innerHTML = `
+            <input type="text" value="${itemText}" id="edit-in-${day}-${idx}">
+            <span class="del-btn" onclick="removeDayItem('${day}', ${idx})">✕</span>
+          `;
+        } else {
+          // 渲染地点和导航按钮
+          let formattedText = itemText.replace(/\[(.*?)\]/g, (match, p1) => {
+            return `<a class="nav-btn" onclick="openAmap('${p1}')">📍 ${p1}</a>`;
+          });
+          li.innerHTML = `<span>• ${formattedText}</span>`;
+        }
+        list.appendChild(li);
+      });
+
+      if (isEditing) {
+        const addBtnLi = document.createElement("li");
+        addBtnLi.style.justifyContent = "center";
+        addBtnLi.innerHTML = `<button class="btn-action" style="width:100%;" onclick="addDayItem('${day}')">+ 添加一行行程</button>`;
+        list.appendChild(addBtnLi);
+      }
+    });
+    localStorage.setItem("shunde_schedules_v1", JSON.stringify(daySchedules));
+  }
+
+  function toggleEditDay(day) {
+    const btn = document.getElementById(`btn-edit-${day}`);
+    if (!dayEditingState[day]) {
+      dayEditingState[day] = true;
+      btn.textContent = "💾 保存行程";
+    } else {
+      // 保存更改
+      const newItems = [];
+      daySchedules[day].forEach((_, idx) => {
+        const input = document.getElementById(`edit-in-${day}-${idx}`);
+        if (input && input.value.trim()) {
+          newItems.push(input.value.trim());
+        }
+      });
+      daySchedules[day] = newItems;
+      dayEditingState[day] = false;
+      btn.textContent = "✏️ 修改行程";
+    }
+    renderDaySchedules();
+  }
+
+  function addDayItem(day) {
+    daySchedules[day].push("新行程项");
+    renderDaySchedules();
+  }
+
+  function removeDayItem(day, idx) {
+    daySchedules[day].splice(idx, 1);
+    renderDaySchedules();
+  }
+
+  // 🤖 AI 智能行程规划算法
+  function runAiPlanner() {
+    const rawInput = document.getElementById("ai-input").value.trim();
+    if (!rawInput) { alert("请先输入大家想去的地方或美食哦！"); return; }
+
+    const status = document.getElementById("ai-status");
+    status.textContent = "🤖 AI 思考规划中...";
+
+    const items = rawInput.split(/[,，\n\s]+/).filter(x => x.length > 0);
+
+    // AI 区域归类规则
+    let result = {
+      day1: ["上海/香港团队抵达会合", "在大良老街吃夜宵与小吃"],
+      day2: ["大良老城打卡 & 顺峰山周边"],
+      day3: ["水乡与均安/容桂特色打卡"],
+      day4: ["陈村/伦教早茶及返程准备"]
+    };
+
+    items.forEach(item => {
+      if (item.includes("水乡") || item.includes("均安") || item.includes("蒸猪") || item.includes("容桂") || item.includes("渔人码头")) {
+        result.day3.push(`${item} [${item}]`);
+      } else if (item.includes("陈村") || item.includes("伦教") || item.includes("早茶") || item.includes("手信")) {
+        result.day4.push(`${item} [${item}]`);
+      } else if (item.includes("夜宵") || item.includes("甜品") || item.includes("牛奶") || item.includes("粥")) {
+        result.day1.push(`体验 ${item} [${item}]`);
+      } else {
+        result.day2.push(`${item} [${item}]`);
+      }
+    });
+
+    setTimeout(() => {
+      daySchedules = result;
+      renderDaySchedules();
+      status.innerHTML = `✨ 已由 <span style="font-weight:bold;">${currentMember.name}</span> 使用 AI 智能生成全新行程！`;
+    }, 600);
+  }
+
+  // 默认待办与美食数据
   const defaultTodos = [
     { text: "上海 ⇋ 广州 机票 (2人)", done: false, author: members[0] },
     { text: "香港 ⇋ 广州南 高铁票 (2人)", done: false, author: members[1] },
-    { text: "清晖园门票预约", done: false, author: members[0] },
-    { text: "桑拿鱼餐厅订位", done: false, author: members[2] }
+    { text: "清晖园门票预约", done: false, author: members[2] },
+    { text: "桑拿鱼餐厅提前订位", done: false, author: members[3] }
   ];
 
   const defaultFoods = [
@@ -502,18 +693,16 @@
     { text: "均安蒸猪", done: false, author: members[3] }
   ];
 
-  let todos = JSON.parse(localStorage.getItem("shunde_todos_v2")) || defaultTodos;
-  let foods = JSON.parse(localStorage.getItem("shunde_foods_v2")) || defaultFoods;
-  let xhsLinks = JSON.parse(localStorage.getItem("shunde_xhs_v2")) || [];
-  let feedbacks = JSON.parse(localStorage.getItem("shunde_feedbacks_v2")) || { day1: [], day2: [], day3: [], day4: [] };
+  let todos = JSON.parse(localStorage.getItem("shunde_todos_v3")) || defaultTodos;
+  let foods = JSON.parse(localStorage.getItem("shunde_foods_v3")) || defaultFoods;
+  let xhsLinks = JSON.parse(localStorage.getItem("shunde_xhs_v3")) || [];
+  let feedbacks = JSON.parse(localStorage.getItem("shunde_feedbacks_v3")) || { day1: [], day2: [], day3: [], day4: [] };
 
-  // 辅助函数：渲染用户 Badge
   function getUserBadgeHtml(author) {
     if (!author) return '';
     return `<span class="user-badge"><img src="${author.avatar}"> ${author.name}</span>`;
   }
 
-  // 渲染待办
   function renderTodos() {
     const list = document.getElementById("todo-list");
     list.innerHTML = "";
@@ -531,7 +720,7 @@
       `;
       list.appendChild(li);
     });
-    localStorage.setItem("shunde_todos_v2", JSON.stringify(todos));
+    localStorage.setItem("shunde_todos_v3", JSON.stringify(todos));
   }
 
   function addTodo() {
@@ -546,7 +735,6 @@
   function toggleTodo(index) { todos[index].done = !todos[index].done; renderTodos(); }
   function deleteTodo(index) { todos.splice(index, 1); renderTodos(); }
 
-  // 渲染美食
   function renderFoods() {
     const container = document.getElementById("food-list");
     container.innerHTML = "";
@@ -560,7 +748,7 @@
       `;
       container.appendChild(div);
     });
-    localStorage.setItem("shunde_foods_v2", JSON.stringify(foods));
+    localStorage.setItem("shunde_foods_v3", JSON.stringify(foods));
   }
 
   function addFood() {
@@ -575,7 +763,6 @@
   function toggleFood(index) { foods[index].done = !foods[index].done; renderFoods(); }
   function deleteFood(index) { foods.splice(index, 1); renderFoods(); }
 
-  // 小红书链接
   function renderXhs() {
     const list = document.getElementById("xhs-list");
     list.innerHTML = "";
@@ -591,7 +778,7 @@
       `;
       list.appendChild(li);
     });
-    localStorage.setItem("shunde_xhs_v2", JSON.stringify(xhsLinks));
+    localStorage.setItem("shunde_xhs_v3", JSON.stringify(xhsLinks));
   }
 
   function addXhsLink() {
@@ -606,7 +793,6 @@
 
   function deleteXhs(index) { xhsLinks.splice(index, 1); renderXhs(); }
 
-  // 行程建议
   function renderFeedbacks() {
     ['day1', 'day2', 'day3', 'day4'].forEach(day => {
       const list = document.getElementById(`fb-${day}`);
@@ -623,7 +809,7 @@
         list.appendChild(li);
       });
     });
-    localStorage.setItem("shunde_feedbacks_v2", JSON.stringify(feedbacks));
+    localStorage.setItem("shunde_feedbacks_v3", JSON.stringify(feedbacks));
   }
 
   function addFeedback(day) {
@@ -665,6 +851,7 @@
   // 初始化
   window.onload = function() {
     renderMemberSelector();
+    renderDaySchedules();
     renderTodos();
     renderFoods();
     renderXhs();
