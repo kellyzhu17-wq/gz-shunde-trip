@@ -34,22 +34,44 @@
   header h1 { font-size: 24px; font-weight: 700; color: var(--primary); letter-spacing: -0.5px; }
   header p { color: var(--text-muted); font-size: 13px; margin-top: 4px; }
 
-  /* 状态提示条 */
-  .sync-bar {
-    background: #e8f5e9;
-    color: #2e7d32;
+  /* 手动同步控制栏 */
+  .sync-panel {
+    background: #fff3e0;
+    border: 1px solid #ffe0b2;
+    border-radius: var(--radius-lg);
+    padding: 12px 16px;
+    margin: 12px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    box-shadow: var(--shadow);
+  }
+  .sync-panel-title { font-size: 13px; font-weight: 700; color: #e65100; display: flex; align-items: center; gap: 6px; }
+  .sync-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+  .btn-sync-export {
+    flex: 1;
+    background: #e65100;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: var(--radius-md);
     font-size: 12px;
-    padding: 6px 12px;
-    border-radius: 20px;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    margin-bottom: 12px;
     font-weight: 600;
     cursor: pointer;
+    text-align: center;
   }
-  .sync-dot { width: 8px; height: 8px; background: #4caf50; border-radius: 50%; display: inline-block; animation: pulse 2s infinite; }
-  @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+  .btn-sync-import {
+    flex: 1;
+    background: #fff;
+    color: #e65100;
+    border: 1px solid #e65100;
+    padding: 8px 12px;
+    border-radius: var(--radius-md);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+  }
 
   .countdown {
     background: linear-gradient(135deg, #ff7043, #d84315);
@@ -340,11 +362,17 @@
 <header>
   <h1>🥢 顺德吃货团 · 4 天 3 晚</h1>
   <p>2026.11.06 – 11.09 · 广州 & 顺德 · Kelly / Fred / Shirley / Wentian</p>
-  <div style="text-align: center; margin-top: 8px;">
-    <span class="sync-bar" onclick="manualSync()" title="点击手动从云端同步最新数据">
-      <span class="sync-dot" id="sync-dot"></span> 
-      <span id="sync-status-text">云端实时协同已连接（点击刷新）</span>
-    </span>
+  
+  <!-- 手动口令同步面板 -->
+  <div class="sync-panel">
+    <div class="sync-panel-title">📱 跨手机手动同步面板</div>
+    <div style="font-size:12px; color:#795548; line-height:1.4;">
+      在 A 手机修改/留言后点击<b>“生成同步口令”</b>，到 B 手机点击<b>“导入同步口令”</b>粘贴即可无缝同步！
+    </div>
+    <div class="sync-buttons">
+      <button class="btn-sync-export" onclick="exportSyncCode()">📤 1. 生成并复制同步口令</button>
+      <button class="btn-sync-import" onclick="importSyncCode()">📥 2. 导入同步口令更新</button>
+    </div>
   </div>
 </header>
 
@@ -602,47 +630,45 @@
     feedbacks: { day1: [], day2: [], day3: [], day4: [] }
   };
 
-  let globalState = JSON.parse(localStorage.getItem("shunde_trip_master_v17")) || defaultGlobalState;
+  let globalState = JSON.parse(localStorage.getItem("shunde_trip_master_v18")) || defaultGlobalState;
   let dayEditingState = { day1: false, day2: false, day3: false, day4: false };
 
-  // 使用更稳定、专为无密码实时同步设计的 Npoint.io 免费 API 节点
-  const API_URL = "https://api.npoint.io/e731737be2e176378e9b";
+  // 手动口令同步函数
+  function exportSyncCode() {
+    const jsonStr = JSON.stringify(globalState);
+    const encoded = btoa(unescape(encodeURIComponent(jsonStr))); // 编码防止乱码
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(encoded).then(() => {
+        alert("✅ 同步口令已复制到剪贴板！\n\n请直接去另一个手机点击“导入同步口令”粘贴即可同步。");
+      }).catch(() => {
+        prompt("请复制以下同步口令文本：", encoded);
+      });
+    } else {
+      prompt("请复制以下同步口令文本：", encoded);
+    }
+  }
 
-  async function fetchCloudData() {
+  function importSyncCode() {
+    const input = prompt("请在此处粘贴从另一台手机复制的同步口令文本：");
+    if (!input) return;
     try {
-      const res = await fetch(API_URL + "?t=" + Date.now()); // 加时间戳防手机强缓存
-      if (res.ok) {
-        const cloudData = await res.json();
-        if (cloudData && cloudData.daySchedules) {
-          globalState = cloudData;
-          localStorage.setItem("shunde_trip_master_v17", JSON.stringify(globalState));
-          renderAll();
-          document.getElementById("sync-status-text").textContent = "云端实时协同已连接 (最新)";
-        }
+      const decoded = decodeURIComponent(escape(atob(input.trim())));
+      const parsed = JSON.parse(decoded);
+      if (parsed && parsed.daySchedules) {
+        globalState = parsed;
+        localStorage.setItem("shunde_trip_master_v18", JSON.stringify(globalState));
+        renderAll();
+        alert("🎉 成功导入最新行程与留言数据！两台手机已同步。");
+      } else {
+        alert("❌ 口令格式有误，请检查是否复制完整。");
       }
     } catch (e) {
-      console.log("离线使用本地缓存");
+      alert("❌ 解析失败，口令可能损坏或不完整。");
     }
   }
 
-  async function syncToCloud() {
-    localStorage.setItem("shunde_trip_master_v17", JSON.stringify(globalState));
-    document.getElementById("sync-status-text").textContent = "正在同步到云端...";
-    try {
-      await fetch(API_URL, {
-        method: 'POST', // Npoint 标准保存方法
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(globalState)
-      });
-      document.getElementById("sync-status-text").textContent = "云端实时协同已连接";
-    } catch (e) {
-      document.getElementById("sync-status-text").textContent = "已存本地 (等待重试)";
-    }
-  }
-
-  function manualSync() {
-    fetchCloudData();
-    alert("已从云端刷新最新数据！");
+  function saveLocal() {
+    localStorage.setItem("shunde_trip_master_v18", JSON.stringify(globalState));
   }
 
   function renderAll() {
@@ -726,7 +752,7 @@
       globalState.daySchedules[day] = newItems;
       dayEditingState[day] = false;
       btn.textContent = "✏️ 修改行程";
-      syncToCloud();
+      saveLocal();
     }
     renderDaySchedules();
   }
@@ -783,9 +809,9 @@
 
     setTimeout(() => {
       globalState.daySchedules = newSchedules;
-      syncToCloud();
+      saveLocal();
       renderDaySchedules();
-      status.innerHTML = `✨ 已由 <span style="font-weight:bold;">${currentMember.name}</span> AI 按天数精准更新行程！`;
+      status.innerHTML = `✨ 已由 <span style="font-weight:bold;">${currentMember.name}</span> AI 按天数精准更新行程！(请记得点击上方“生成口令”同步到另一手机)`;
     }, 600);
   }
 
@@ -830,7 +856,7 @@
       });
       isEditingTrans = false;
       btn.textContent = "✏️ 编辑班次";
-      syncToCloud();
+      saveLocal();
       renderTransports();
     }
   }
@@ -864,20 +890,20 @@
     if (input.value.trim()) {
       globalState.todos.push({ text: input.value.trim(), done: false, author: currentMember });
       input.value = "";
-      syncToCloud();
+      saveLocal();
       renderTodos();
     }
   }
 
   function toggleTodo(index) {
     globalState.todos[index].done = !globalState.todos[index].done;
-    syncToCloud();
+    saveLocal();
     renderTodos();
   }
 
   function deleteTodo(index) {
     globalState.todos.splice(index, 1);
-    syncToCloud();
+    saveLocal();
     renderTodos();
   }
 
@@ -901,20 +927,20 @@
     if (input.value.trim()) {
       globalState.foods.push({ text: input.value.trim(), done: false, author: currentMember });
       input.value = "";
-      syncToCloud();
+      saveLocal();
       renderFoods();
     }
   }
 
   function toggleFood(index) {
     globalState.foods[index].done = !globalState.foods[index].done;
-    syncToCloud();
+    saveLocal();
     renderFoods();
   }
 
   function deleteFood(index) {
     globalState.foods.splice(index, 1);
-    syncToCloud();
+    saveLocal();
     renderFoods();
   }
 
@@ -958,7 +984,7 @@
       if(!globalState.xhsLinks) globalState.xhsLinks = [];
       globalState.xhsLinks.push({ title: rawTitle, url: cleanUrl, author: currentMember });
       titleInput.value = ""; urlInput.value = "";
-      syncToCloud();
+      saveLocal();
       renderXhs();
     } else {
       alert("请填写链接或小红书分享文本哦！");
@@ -967,7 +993,7 @@
 
   function deleteXhs(index) {
     globalState.xhsLinks.splice(index, 1);
-    syncToCloud();
+    saveLocal();
     renderXhs();
   }
 
@@ -996,23 +1022,20 @@
       if (!globalState.feedbacks[day]) globalState.feedbacks[day] = [];
       globalState.feedbacks[day].push({ text: input.value.trim(), author: currentMember });
       input.value = "";
-      syncToCloud();
+      saveLocal();
       renderFeedbacks();
     }
   }
 
   function deleteFeedback(day, index) {
     globalState.feedbacks[day].splice(index, 1);
-    syncToCloud();
+    saveLocal();
     renderFeedbacks();
   }
 
   window.onload = function() {
     renderMemberSelector();
     renderAll();
-    fetchCloudData(); // 页面加载时自动从云端拉取最新数据
-    // 增加后台自动轮询：每 10 秒自动静默向云端检查一次更新，确保两台手机实时同步
-    setInterval(fetchCloudData, 10000);
   };
 </script>
 </body>
