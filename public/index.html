@@ -35,7 +35,7 @@
   header h1 { font-size: 24px; font-weight: 700; color: var(--primary); letter-spacing: -0.5px; }
   header p { color: var(--text-muted); font-size: 13px; margin-top: 4px; }
 
-  /* 云端协同状态提示条 */
+  /* 协同状态提示条 */
   .sync-bar {
     background: #e8f5e9;
     color: #2e7d32;
@@ -49,8 +49,7 @@
     font-weight: 600;
     cursor: pointer;
   }
-  .sync-dot { width: 8px; height: 8px; background: #4caf50; border-radius: 50%; display: inline-block; animation: pulse 2s infinite; }
-  @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+  .sync-dot { width: 8px; height: 8px; background: #4caf50; border-radius: 50%; display: inline-block; }
 
   /* 倒计时 */
   .countdown {
@@ -127,6 +126,28 @@
     transition: background 0.2s;
   }
   .btn-action:hover { background: #ffccbc; }
+
+  /* 微信群同步工具条卡片 */
+  .share-sync-box {
+    background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+    border: 1px solid #a5d6a7;
+    border-radius: var(--radius-lg);
+    padding: 16px;
+    margin: 16px 0;
+    text-align: center;
+  }
+  .share-sync-box h3 { font-size: 15px; color: #1b5e20; margin-bottom: 6px; }
+  .share-sync-box p { font-size: 12px; color: #388e3c; margin-bottom: 10px; line-height: 1.4; }
+  .btn-share {
+    background: #2e7d32;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+  }
 
   /* 天气卡片 */
   .weather-box {
@@ -358,12 +379,19 @@
   <h1>🥢 顺德吃货团 · 4 天 3 晚</h1>
   <p>2026.11.06 – 11.09 · 广州 & 顺德 · Kelly / Fred / Shirley / Wentian</p>
   <div style="text-align: center; margin-top: 8px;">
-    <span class="sync-bar" onclick="manualSync()" title="点击手动从云端同步最新数据">
-      <span class="sync-dot" id="sync-dot"></span> 
-      <span id="sync-status-text">云端实时协同已连接（点击刷新）</span>
+    <span class="sync-bar">
+      <span class="sync-dot"></span> 
+      <span>多人共享链接同步模式已就绪</span>
     </span>
   </div>
 </header>
+
+<!-- 微信群一键分享与同步卡片 -->
+<div class="share-sync-box">
+  <h3>🔗 微信群实时同步指南</h3>
+  <p>由于浏览器安全限制，任何人修改后，只需点击下方按钮复制带最新数据的专属链接发到群里，大家点开就能看到彼此的修改！</p>
+  <button class="btn-share" onclick="copyShareLink()">📋 复制当前带最新修改的专属链接</button>
+</div>
 
 <div class="countdown">
   <div class="label">距离出发还有</div>
@@ -604,7 +632,7 @@
     },
     transports: [
       { route: "🛫 上海 ⇋ 广州（2人 · 11/6 去程）", detail: "待补航班号 (时间待定)" },
-      { route: "🚄 香港 ⇋ 广州南（2user · 11/6 去程）", detail: "待补车次 (时间待定)" },
+      { route: "🚄 香港 ⇋ 广州南（2人 · 11/6 去程）", detail: "待补车次 (时间待定)" },
       { route: "🛫 广州 → 新加坡（2人 · 11/9 回程）", detail: "CZ351 (18:50 起飞)" },
       { route: "🛫 广州 → 上海（2人 · 11/9 回程）", detail: "待补航班号 (时间待定)" }
     ],
@@ -629,48 +657,41 @@
     feedbacks: { day1: [], day2: [], day3: [], day4: [] }
   };
 
-  let globalState = JSON.parse(localStorage.getItem("shunde_trip_master_v10")) || defaultGlobalState;
-  let dayEditingState = { day1: false, day2: false, day3: false, day4: false };
-
-  // 🌐 真正的云端 API 协同对接 (基于公开免费 JSONBin / KV 节点)
-  const API_BIN_ID = "shunde_trip_group_2026_v1"; 
-  const API_URL = `https://json.extendsclass.com/bin/${API_BIN_ID}`;
-
-  async function fetchCloudData() {
+  // 🌐 核心：从 URL 的 `#data=` 参数中解析最新协同数据，没有则读本地或默认值
+  function loadState() {
     try {
-      const res = await fetch(API_URL, { headers: { 'Security-Key': 'shunde2026' } });
-      if (res.ok) {
-        const cloudData = await res.json();
-        if (cloudData && cloudData.daySchedules) {
-          globalState = cloudData;
-          localStorage.setItem("shunde_trip_master_v10", JSON.stringify(globalState));
-          renderAll();
-          document.getElementById("sync-status-text").textContent = "云端同步已连接 (最新)";
-        }
+      const hash = window.location.hash;
+      if (hash && hash.startsWith("#data=")) {
+        const jsonStr = decodeURIComponent(hash.replace("#data=", ""));
+        const parsed = JSON.parse(jsonStr);
+        if (parsed && parsed.daySchedules) return parsed;
       }
     } catch (e) {
-      console.log("使用本地缓存离线运行中...");
+      console.log("解析分享链接数据失败，使用默认状态");
     }
+    return JSON.parse(localStorage.getItem("shunde_trip_master_v11")) || defaultGlobalState;
   }
 
-  async function syncToCloud() {
-    localStorage.setItem("shunde_trip_master_v10", JSON.stringify(globalState));
-    document.getElementById("sync-status-text").textContent = "正在同步到云端...";
+  let globalState = loadState();
+  let dayEditingState = { day1: false, day2: false, day3: false, day4: false };
+
+  // 🌐 核心：每次修改自动写入本地及更新 URL Hash 状态
+  function syncState() {
+    localStorage.setItem("shunde_trip_master_v11", JSON.stringify(globalState));
     try {
-      await fetch(API_URL, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json', 'Security-Key': 'shunde2026' },
-        body: JSON.stringify(globalState)
-      });
-      document.getElementById("sync-status-text").textContent = "云端实时协同已连接";
-    } catch (e) {
-      document.getElementById("sync-status-text").textContent = "已存本地 (等待云端重试)";
-    }
+      const jsonStr = encodeURIComponent(JSON.stringify(globalState));
+      history.replaceState(null, "", "#data=" + jsonStr);
+    } catch (e) {}
   }
 
-  function manualSync() {
-    fetchCloudData();
-    alert("已从云端刷新最新数据！");
+  function copyShareLink() {
+    syncState();
+    const currentUrl = window.location.href;
+    navigator.clipboard.writeText(currentUrl).then(() => {
+      alert("✅ 专属协同链接已复制成功！\n\n请直接发到微信群里，其他人点开这个链接，即可完美同步你刚刚修改的所有内容！");
+    }).catch(() => {
+      prompt("请手动复制下方链接发给同伴：", currentUrl);
+    });
   }
 
   function renderAll() {
@@ -754,7 +775,7 @@
       globalState.daySchedules[day] = newItems;
       dayEditingState[day] = false;
       btn.textContent = "✏️ 修改行程";
-      syncToCloud();
+      syncState();
     }
     renderDaySchedules();
   }
@@ -811,7 +832,7 @@
 
     setTimeout(() => {
       globalState.daySchedules = newSchedules;
-      syncToCloud();
+      syncState();
       renderDaySchedules();
       status.innerHTML = `✨ 已由 <span style="font-weight:bold;">${currentMember.name}</span> AI 按天数精准更新行程！`;
     }, 600);
@@ -858,7 +879,7 @@
       });
       isEditingTrans = false;
       btn.textContent = "✏️ 编辑班次";
-      syncToCloud();
+      syncState();
       renderTransports();
     }
   }
@@ -892,20 +913,20 @@
     if (input.value.trim()) {
       globalState.todos.push({ text: input.value.trim(), done: false, author: currentMember });
       input.value = "";
-      syncToCloud();
+      syncState();
       renderTodos();
     }
   }
 
   function toggleTodo(index) {
     globalState.todos[index].done = !globalState.todos[index].done;
-    syncToCloud();
+    syncState();
     renderTodos();
   }
 
   function deleteTodo(index) {
     globalState.todos.splice(index, 1);
-    syncToCloud();
+    syncState();
     renderTodos();
   }
 
@@ -929,20 +950,20 @@
     if (input.value.trim()) {
       globalState.foods.push({ text: input.value.trim(), done: false, author: currentMember });
       input.value = "";
-      syncToCloud();
+      syncState();
       renderFoods();
     }
   }
 
   function toggleFood(index) {
     globalState.foods[index].done = !globalState.foods[index].done;
-    syncToCloud();
+    syncState();
     renderFoods();
   }
 
   function deleteFood(index) {
     globalState.foods.splice(index, 1);
-    syncToCloud();
+    syncState();
     renderFoods();
   }
 
@@ -986,7 +1007,7 @@
       if(!globalState.xhsLinks) globalState.xhsLinks = [];
       globalState.xhsLinks.push({ title: rawTitle, url: cleanUrl, author: currentMember });
       titleInput.value = ""; urlInput.value = "";
-      syncToCloud();
+      syncState();
       renderXhs();
     } else {
       alert("请填写链接或小红书分享文本哦！");
@@ -995,7 +1016,7 @@
 
   function deleteXhs(index) {
     globalState.xhsLinks.splice(index, 1);
-    syncToCloud();
+    syncState();
     renderXhs();
   }
 
@@ -1024,22 +1045,20 @@
       if (!globalState.feedbacks[day]) globalState.feedbacks[day] = [];
       globalState.feedbacks[day].push({ text: input.value.trim(), author: currentMember });
       input.value = "";
-      syncToCloud();
+      syncState();
       renderFeedbacks();
     }
   }
 
   function deleteFeedback(day, index) {
     globalState.feedbacks[day].splice(index, 1);
-    syncToCloud();
+    syncState();
     renderFeedbacks();
   }
 
   window.onload = function() {
     renderMemberSelector();
     renderAll();
-    fetchCloudData(); // 页面打开时自动从云端拉取最新数据
-    setInterval(fetchCloudData, 10000); // 每10秒自动静默轮询云端，实现多端实时同步
   };
 </script>
 </body>
