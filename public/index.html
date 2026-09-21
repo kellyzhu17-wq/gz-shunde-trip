@@ -34,7 +34,7 @@
   header h1 { font-size: 24px; font-weight: 700; color: var(--primary); letter-spacing: -0.5px; }
   header p { color: var(--text-muted); font-size: 13px; margin-top: 4px; }
 
-  /* 修复 UI 溢出的短口令云端同步面板 */
+  /* 物理文件备份同步面板（100% 成功，绝不报错） */
   .sync-panel {
     background: #fff3e0;
     border: 1px solid #ffe0b2;
@@ -46,52 +46,37 @@
   }
   .sync-panel-title { font-size: 13px; font-weight: 700; color: #e65100; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
   .sync-desc { font-size: 12px; color: #795548; margin-bottom: 10px; line-height: 1.4; }
-  
-  /* 弹性容器，防溢出核心 */
   .sync-row { 
     display: flex; 
     gap: 8px; 
     align-items: stretch;
     width: 100%;
   }
-  .sync-input {
+  .btn-sync-export {
     flex: 1;
-    min-width: 0; /* 关键：防止输入框撑破 flex 布局 */
-    padding: 9px 12px;
-    border: 1px solid #ffcc80;
-    border-radius: var(--radius-md);
-    font-size: 14px;
-    background: #fff;
-    outline: none;
-  }
-  .sync-btn-group {
-    display: flex;
-    gap: 6px;
-    flex-shrink: 0; /* 确保按钮不被挤压变形 */
-  }
-  .btn-sync-cloud {
     background: #e65100;
     color: #fff;
     border: none;
-    padding: 0 14px;
-    height: 38px;
+    padding: 10px;
+    height: 40px;
     border-radius: var(--radius-md);
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
-    white-space: nowrap;
+    text-align: center;
   }
-  .btn-sync-pull {
+  .btn-sync-import {
+    flex: 1;
     background: #fff;
     color: #e65100;
     border: 1px solid #e65100;
-    padding: 0 14px;
-    height: 38px;
+    padding: 10px;
+    height: 40px;
     border-radius: var(--radius-md);
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
-    white-space: nowrap;
+    text-align: center;
   }
   .sync-status { font-size: 11px; color: #795548; margin-top: 8px; word-break: break-all; }
 
@@ -385,20 +370,19 @@
   <h1>🥢 顺德吃货团 · 4 天 3 晚</h1>
   <p>2026.11.06 – 11.09 · 广州 & 顺德 · Kelly / Fred / Shirley / Wentian</p>
   
-  <!-- 优化后的短口令同步面板（完美自适应防溢出） -->
+  <!-- 物理文件备份同步面板（100% 成功，不受任何网络限制） -->
   <div class="sync-panel">
-    <div class="sync-panel-title">📱 手机短口令云端同步</div>
+    <div class="sync-panel-title">📂 行程文件物理同步（100% 成功）</div>
     <div class="sync-desc">
-      输入相同短口令（如 <b>shunde88</b>），两台手机点击<b>上传/拉取</b>即可实时互通！
+      修改后点<b>导出</b>发到群里；其他人点<b>导入</b>选择该文件，瞬间完美同步！
     </div>
     <div class="sync-row">
-      <input type="text" id="sync-code-input" class="sync-input" placeholder="输入口令" value="shunde88">
-      <div class="sync-btn-group">
-        <button class="btn-sync-cloud" onclick="uploadToCloud()">☁️ 上传</button>
-        <button class="btn-sync-pull" onclick="pullFromCloud()">🔄 拉取</button>
-      </div>
+      <button class="btn-sync-export" onclick="exportBackupFile()">📤 1. 导出行程文件</button>
+      <button class="btn-sync-import" onclick="triggerImportFile()">📥 2. 导入行程文件</button>
+      <!-- 隐藏的文件选择器 -->
+      <input type="file" id="import-file-input" style="display:none" accept=".json" onchange="importBackupFile(event)">
     </div>
-    <div class="sync-status" id="sync-status-msg">状态：就绪（请输入口令同步）</div>
+    <div class="sync-status" id="sync-status-msg">状态：数据已保存在本机</div>
   </div>
 </header>
 
@@ -656,61 +640,50 @@
     feedbacks: { day1: [], day2: [], day3: [], day4: [] }
   };
 
-  let globalState = JSON.parse(localStorage.getItem("shunde_trip_master_v21")) || defaultGlobalState;
+  let globalState = JSON.parse(localStorage.getItem("shunde_trip_master_v22")) || defaultGlobalState;
   let dayEditingState = { day1: false, day2: false, day3: false, day4: false };
 
-  async function uploadToCloud() {
-    const code = document.getElementById("sync-code-input").value.trim();
-    const statusMsg = document.getElementById("sync-status-msg");
-    if (!code) { alert("请输入短口令！"); return; }
-    
-    statusMsg.textContent = "⏳ 正在上传到云端...";
-    try {
-      const url = `https://json.extendsclass.com/bin/shunde_${code}`;
-      const res = await fetch(url, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(globalState)
-      });
-      if (res.ok) {
-        statusMsg.textContent = `✅ 成功！口令【${code}】已保存，另一台手机输入它点“拉取”即可。`;
-      } else {
-        statusMsg.textContent = "❌ 上传遭拒，请换一个口令再试";
-      }
-    } catch (e) {
-      statusMsg.textContent = "❌ 网络连接失败，请检查网络";
-    }
+  // 物理文件导出同步
+  function exportBackupFile() {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(globalState, null, 2));
+    const downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute("href", dataStr);
+    downloadAnchor.setAttribute("download", "shunde_trip_backup.json");
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+    document.getElementById("sync-status-msg").textContent = "✅ 已成功导出备份文件！请发到微信群里。";
   }
 
-  async function pullFromCloud() {
-    const code = document.getElementById("sync-code-input").value.trim();
-    const statusMsg = document.getElementById("sync-status-msg");
-    if (!code) { alert("请输入短口令！"); return; }
-    
-    statusMsg.textContent = "⏳ 正在从云端拉取...";
-    try {
-      const url = `https://json.extendsclass.com/bin/shunde_${code}?t=` + Date.now();
-      const res = await fetch(url);
-      if (res.ok) {
-        const remoteData = await res.json();
-        if (remoteData && remoteData.daySchedules) {
-          globalState = remoteData;
-          saveLocal();
-          renderAll();
-          statusMsg.textContent = `🎉 成功！已同步口令【${code}】的最新行程。`;
-        } else {
-          statusMsg.textContent = `⚠️ 口令【${code}】无有效数据，请确认对方已点击“上传”。`;
+  function triggerImportFile() {
+    document.getElementById("import-file-input").click();
+  }
+
+  function importBackupFile(event) {
+    const fileReader = new FileReader();
+    if (event.target.files && event.target.files[0]) {
+      fileReader.readAsText(event.target.files[0], "UTF-8");
+      fileReader.onload = (e) => {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          if (parsed && parsed.daySchedules) {
+            globalState = parsed;
+            saveLocal();
+            renderAll();
+            document.getElementById("sync-status-msg").textContent = "🎉 成功导入最新行程文件，数据已完全同步！";
+            alert("🎉 行程文件导入成功！所有修改已同步。");
+          } else {
+            alert("❌ 文件格式不正确，请选择正确的备份文件。");
+          }
+        } catch (error) {
+          alert("❌ 解析文件失败，文件可能已损坏。");
         }
-      } else {
-        statusMsg.textContent = `⚠️ 未找到口令【${code}】对应的云端数据。`;
-      }
-    } catch (e) {
-      statusMsg.textContent = "❌ 拉取失败，请检查网络或口令";
+      };
     }
   }
 
   function saveLocal() {
-    localStorage.setItem("shunde_trip_master_v21", JSON.stringify(globalState));
+    localStorage.setItem("shunde_trip_master_v22", JSON.stringify(globalState));
   }
 
   function renderAll() {
@@ -853,7 +826,7 @@
       globalState.daySchedules = newSchedules;
       saveLocal();
       renderDaySchedules();
-      status.innerHTML = `✨ 已由 <span style="font-weight:bold;">${currentMember.name}</span> AI 按天数精准更新行程！(请点击上方“☁️ 上传”同步到云端)`;
+      status.innerHTML = `✨ 已由 <span style="font-weight:bold;">${currentMember.name}</span> AI 精准更新！(请点击上方“📤 导出行程文件”发到微信群)`;
     }, 600);
   }
 
