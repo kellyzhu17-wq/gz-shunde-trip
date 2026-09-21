@@ -8,23 +8,48 @@
 * { margin: 0; padding: 0; box-sizing: border-box; } 
 body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #faf6f0; color: #333; line-height: 1.7; } 
 .wrap { max-width: 680px; margin: 0 auto; padding: 16px; } 
-header { text-align: center; padding: 28px 0 12px; } 
+header { text-align: center; padding: 24px 0 12px; } 
 header h1 { font-size: 26px; color: #b5462a; } 
 header p { color: #888; font-size: 14px; margin-top: 6px; } 
+
 .countdown { background: #b5462a; color: #fff; border-radius: 14px; text-align: center; padding: 18px; margin: 16px 0; } 
-.countdown .num { font-size: 34px; font-weight: bold; } 
+.countdown .num { font-size: 32px; font-weight: bold; } 
+
 .card { background: #fff; border-radius: 14px; padding: 18px; margin: 14px 0; box-shadow: 0 2px 8px rgba(0,0,0,.06); } 
-.card h2 { font-size: 18px; color: #b5462a; margin-bottom: 8px; } 
-.tag { display: inline-block; background: #f3e2d5; color: #8a4b2f; border-radius: 6px; font-size: 12px; padding: 2px 8px; margin: 2px 4px 2px 0; } 
-ul { padding-left: 20px; } 
-li { margin: 6px 0; } 
-a { color: #b5462a; } 
+.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.card h2 { font-size: 18px; color: #b5462a; margin: 0; } 
+
+.btn-action { background: #f3e2d5; color: #8a4b2f; border: none; padding: 4px 10px; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: bold; }
+.btn-action:hover { background: #e5cdbd; }
+
+/* 交互列表样式 */
+.interactive-list { list-style: none; padding-left: 0; }
+.interactive-list li { padding: 8px 10px; margin: 6px 0; background: #faf6f0; border-radius: 8px; cursor: pointer; display: flex; align-items: center; user-select: none; transition: all 0.2s; }
+.interactive-list li::before { content: "☐ "; margin-right: 8px; font-weight: bold; color: #b5462a; }
+.interactive-list li.completed { background: #f0f0f0; color: #aaa; text-decoration: line-through; }
+.interactive-list li.completed::before { content: "☑ "; color: #2e7d5b; }
+
+/* 标签交互样式 */
+.tag-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.interactive-tag { display: inline-block; background: #f3e2d5; color: #8a4b2f; border-radius: 20px; font-size: 13px; padding: 4px 12px; cursor: pointer; user-select: none; transition: all 0.2s; border: 1px solid transparent; }
+.interactive-tag.completed { background: #e0e0e0; color: #999; text-decoration: line-through; border-color: #ccc; }
+
+/* 交通卡片可编辑样式 */
+.flight-list { display: flex; flex-direction: column; gap: 8px; }
+.flight { background: #fdf1e7; border-radius: 10px; padding: 10px 14px; font-size: 14px; display: flex; justify-content: space-between; align-items: center; }
+.flight-info { flex: 1; }
+.flight-code { font-weight: bold; color: #b5462a; outline: none; padding: 2px 4px; border-radius: 4px; }
+.flight-code[contenteditable="true"] { background: #fff; border: 1px dashed #b5462a; }
+
+/* 地图图层与卡片 */
+.map-preview { width: 100%; height: 220px; border-radius: 10px; overflow: hidden; border: 0; margin-top: 10px; }
 .nav-btn { display: inline-block; background: #2e7d5b; color: #fff; text-decoration: none; font-size: 12px; border-radius: 6px; padding: 2px 10px; margin-left: 6px; white-space: nowrap; cursor: pointer; } 
+
 table { width: 100%; border-collapse: collapse; font-size: 14px; } 
 th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid #eee; } 
 th { color: #b5462a; } 
-.flight { background: #fdf1e7; border-radius: 10px; padding: 10px 14px; margin: 8px 0; font-size: 14px; } 
-.todo li { list-style: "☐ "; } 
+ul { padding-left: 20px; }
+li { margin: 6px 0; }
 footer { text-align: center; color: #aaa; font-size: 12px; padding: 20px 0; } 
 </style> 
 </head> 
@@ -40,6 +65,16 @@ footer { text-align: center; color: #aaa; font-size: 12px; padding: 20px 0; }
   <div class="num" id="cd">--</div>
 </div>
 
+<!-- 路线纵览与地图卡片 -->
+<div class="card">
+  <div class="card-header">
+    <h2>🗺️ 行程地图路线纵览</h2>
+    <button class="btn-action" onclick="planMultiRoute()">📍 手机高德全行程规划</button>
+  </div>
+  <p style="font-size: 13px; color: #666;">预置广州南站 → 顺德清晖园亚朵酒店 → 逢简水乡 → 白云机场大环线。</p>
+  <iframe class="map-preview" src="https://uri.amap.com/marker?markers=113.2644,23.1291,广州|113.2618,22.8406,清晖园亚朵酒店|113.2104,22.7836,逢简水乡|113.2988,23.3924,白云机场&src=shunde_trip"></iframe>
+</div>
+
 <div class="card">
   <h2>📋 行程总览</h2>
   <table>
@@ -51,12 +86,30 @@ footer { text-align: center; color: #aaa; font-size: 12px; padding: 20px 0; }
   </table>
 </div>
 
+<!-- 可编辑交通信息卡片 -->
 <div class="card">
-  <h2>✈️ 交通信息</h2>
-  <div class="flight">🛫 上海 → 广州 · 11/6 早班机 · <b>待补航班号</b></div>
-  <div class="flight">🚄 香港 → 广州南 · 11/6 晚间 · <b>待补车次</b></div>
-  <div class="flight">🛫 回程 · 11/9 18:50 · <b>CZ351</b> 广州白云 → 新加坡（2 人）</div>
-  <div class="flight">🚄 香港回程 · 11/9 · <b>待补车次</b></div>
+  <div class="card-header">
+    <h2>✈️ 交通信息</h2>
+    <button class="btn-action" id="edit-trans-btn" onclick="toggleEditTransport()">✏️ 编辑班次</button>
+  </div>
+  <div class="flight-list">
+    <div class="flight">
+      <span>🛫 上海 → 广州 · 11/6 早班机</span>
+      <span class="flight-code" id="trans-1">待补航班号</span>
+    </div>
+    <div class="flight">
+      <span>🚄 香港 → 广州南 · 11/6 晚间</span>
+      <span class="flight-code" id="trans-2">待补车次</span>
+    </div>
+    <div class="flight">
+      <span>🛫 回程 · 11/9 18:50 广州 → 新加坡（2人）</span>
+      <span class="flight-code" id="trans-3">CZ351</span>
+    </div>
+    <div class="flight">
+      <span>🚄 香港回程 · 11/9</span>
+      <span class="flight-code" id="trans-4">待补车次</span>
+    </div>
+  </div>
 </div>
 
 <div class="card">
@@ -68,34 +121,26 @@ footer { text-align: center; color: #aaa; font-size: 12px; padding: 20px 0; }
 <div class="card">
   <h2>Day 1 · 11/6 周五 · 抵达会合</h2>
   <ul>
-    <li>上海二人早班机抵广州，市区小逛
-      <a class="nav-btn" onclick="openAmap('广州白云国际机场')">📍 白云机场</a></li>
-    <li>香港二人晚间高铁抵穗 → 顺德大良
-      <a class="nav-btn" onclick="openAmap('广州南站')">📍 广州南站</a></li>
-    <li>夜宵四人会合：毋米粥 / 牛乳糖水
-      <a class="nav-btn" onclick="openAmap('顺德大良华盖路步行街')">📍 华盖路</a></li>
+    <li>上海二人早班机抵广州，市区小逛 <a class="nav-btn" onclick="openAmap('广州白云国际机场')">📍 白云机场</a></li>
+    <li>香港二人晚间高铁抵穗 → 顺德大良 <a class="nav-btn" onclick="openAmap('广州南站')">📍 广州南站</a></li>
+    <li>夜宵四人会合：毋米粥 / 牛乳糖水 <a class="nav-btn" onclick="openAmap('顺德大良华盖路步行街')">📍 华盖路</a></li>
   </ul>
 </div>
 
 <div class="card">
   <h2>Day 2 · 11/7 周六 · 大良老城吃逛</h2>
   <ul>
-    <li>早茶：华盖路老字号
-      <a class="nav-btn" onclick="openAmap('顺德大良华盖路步行街')">📍 导航</a></li>
-    <li>上午：清晖园（提前预约门票）
-      <a class="nav-btn" onclick="openAmap('顺德清晖园')">📍 导航</a></li>
-    <li>午晚餐：炒牛奶、桑拿鱼（需订位）、双皮奶
-      <a class="nav-btn" onclick="openAmap('顺德民信老铺')">📍 双皮奶</a></li>
+    <li>早茶：华盖路老字号 <a class="nav-btn" onclick="openAmap('顺德大良华盖路步行街')">📍 导航</a></li>
+    <li>上午：清晖园（提前预约门票） <a class="nav-btn" onclick="openAmap('顺德清晖园')">📍 导航</a></li>
+    <li>午晚餐：炒牛奶、桑拿鱼（需订位）、双皮奶 <a class="nav-btn" onclick="openAmap('顺德民信老铺')">📍 双皮奶</a></li>
   </ul>
 </div>
 
 <div class="card">
   <h2>Day 3 · 11/8 周日 · 逢简水乡 + 均安</h2>
   <ul>
-    <li>上午：逢简水乡摇橹船、祠堂
-      <a class="nav-btn" onclick="openAmap('顺德逢简水乡')">📍 导航</a></li>
-    <li>午餐：均安蒸猪（提前预订）、鱼饼
-      <a class="nav-btn" onclick="openAmap('顺德均安镇')">📍 导航</a></li>
+    <li>上午：逢简水乡摇橹船、祠堂 <a class="nav-btn" onclick="openAmap('顺德逢简水乡')">📍 导航</a></li>
+    <li>午餐：均安蒸猪（提前预订）、鱼饼 <a class="nav-btn" onclick="openAmap('顺德均安镇')">📍 导航</a></li>
     <li>晚上回大良夜宵收尾</li>
   </ul>
 </div>
@@ -103,35 +148,44 @@ footer { text-align: center; color: #aaa; font-size: 12px; padding: 20px 0; }
 <div class="card">
   <h2>Day 4 · 11/9 周一 · 陈村早茶 & 返程</h2>
   <ul>
-    <li>陈村早茶 + 采购手信（鱼皮角、伦教糕）
-      <a class="nav-btn" onclick="openAmap('顺德陈村镇')">📍 导航</a></li>
-    <li>下午前往白云机场
-      <a class="nav-btn" onclick="openAmap('广州白云国际机场')">📍 导航</a></li>
+    <li>陈村早茶 + 采购手信（鱼皮角、伦教糕） <a class="nav-btn" onclick="openAmap('顺德陈村镇')">📍 导航</a></li>
+    <li>下午前往白云机场 <a class="nav-btn" onclick="openAmap('广州白云国际机场')">📍 导航</a></li>
     <li>18:50 CZ351 广州 → 新加坡（2 人）</li>
   </ul>
 </div>
 
+<!-- 互动待办清单 -->
 <div class="card">
-  <h2>✅ 待办清单</h2>
-  <ul class="todo">
-    <li>上海 ⇋ 广州 机票</li>
-    <li>香港 ⇋ 广州南 高铁票</li>
-    <li>清晖园门票预约</li>
-    <li>桑拿鱼餐厅订位</li>
-    <li>均安蒸猪提前预订</li>
+  <h2>✅ 待办清单 (点击标记完成)</h2>
+  <ul class="interactive-list" id="todo-list">
+    <li onclick="toggleItem(this, 'todo-1')">上海 ⇋ 广州 机票</li>
+    <li onclick="toggleItem(this, 'todo-2')">香港 ⇋ 广州南 高铁票</li>
+    <li onclick="toggleItem(this, 'todo-3')">清晖园门票预约</li>
+    <li onclick="toggleItem(this, 'todo-4')">桑拿鱼餐厅订位</li>
+    <li onclick="toggleItem(this, 'todo-5')">均安蒸猪提前预订</li>
   </ul>
 </div>
 
+<!-- 互动必吃打卡清单 -->
 <div class="card">
-  <h2>🍽 必吃打卡清单</h2>
-  <span class="tag">双皮奶</span><span class="tag">炒牛奶</span><span class="tag">桑拿鱼</span><span class="tag">均安蒸猪</span><span class="tag">鱼饼</span><span class="tag">毋米粥</span><span class="tag">陈村粉</span><span class="tag">伦教糕</span>
+  <h2>🍽 必吃打卡清单 (点击打卡)</h2>
+  <div class="tag-container" id="food-list">
+    <span class="interactive-tag" onclick="toggleTag(this, 'food-1')">双皮奶</span>
+    <span class="interactive-tag" onclick="toggleTag(this, 'food-2')">炒牛奶</span>
+    <span class="interactive-tag" onclick="toggleTag(this, 'food-3')">桑拿鱼</span>
+    <span class="interactive-tag" onclick="toggleTag(this, 'food-4')">均安蒸猪</span>
+    <span class="interactive-tag" onclick="toggleTag(this, 'food-5')">鱼饼</span>
+    <span class="interactive-tag" onclick="toggleTag(this, 'food-6')">毋米粥</span>
+    <span class="interactive-tag" onclick="toggleTag(this, 'food-7')">陈村粉</span>
+    <span class="interactive-tag" onclick="toggleTag(this, 'food-8')">伦教糕</span>
+  </div>
 </div>
 
-<footer>顺德吃货团 · 手册会自动更新 · 出发愉快 🎉</footer>
+<footer>顺德吃货团 · 数据将自动实时保存 · 出发愉快 🎉</footer>
 </div>
 
 <script>
-  // 倒计时逻辑
+  // 倒计时
   const target = new Date("2026-11-06T08:00:00+08:00");
   function tick() {
     const diff = target - new Date();
@@ -144,37 +198,113 @@ footer { text-align: center; color: #aaa; font-size: 12px; padding: 20px 0; }
   tick();
   setInterval(tick, 30000);
 
-  // 高德地图唤起逻辑
+  // 1. 高德地图单点导航/搜索
   function openAmap(keyword) {
     const encodedKeyword = encodeURIComponent(keyword);
     const isiOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
     const isAndroid = /Android/.test(navigator.userAgent);
-    
-    // Web 降级 URL
     const webUrl = `https://uri.amap.com/search?keyword=${encodedKeyword}`;
     
-    // 针对移动端构建 App Scheme
     let appScheme = "";
     if (isiOS) {
-      appScheme = `iosamap://poi?sourceApplication=travel_handbook&keywords=${encodedKeyword}`;
+      appScheme = `iosamap://poi?sourceApplication=shunde_trip&keywords=${encodedKeyword}`;
     } else if (isAndroid) {
-      appScheme = `androidamap://viewMap?sourceApplication=travel_handbook&poiname=${encodedKeyword}`;
+      appScheme = `androidamap://viewMap?sourceApplication=shunde_trip&poiname=${encodedKeyword}`;
     } else {
-      // 桌面端直接跳转 Web 网页
       window.location.href = webUrl;
       return;
     }
 
-    // 尝试唤起 App，若 1.5 秒内未切换（说明未安装或被拦截），平滑降级跳转 Web 版
     const startTime = Date.now();
     window.location.href = appScheme;
-
     setTimeout(() => {
-      if (Date.now() - startTime < 2000) {
-        window.location.href = webUrl;
-      }
+      if (Date.now() - startTime < 2000) { window.location.href = webUrl; }
     }, 1500);
   }
+
+  // 2. 高德全行程多点路线规划 (起点: 广州南站 -> 途经: 顺德清晖园 -> 终点: 逢简水乡)
+  function planMultiRoute() {
+    const isiOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    const isAndroid = /Android/.test(navigator.userAgent);
+    
+    // 采用高德标准 Universal/Scheme 路径：广州南站(113.2644,23.0088) -> 顺德清晖园(113.2618,22.8406)
+    const webRoute = "https://uri.amap.com/navigation?from=113.2644,23.0088,广州南站&to=113.2618,22.8406,顺德清晖园&mode=car";
+    let appScheme = "";
+
+    if (isiOS) {
+      appScheme = "iosamap://path?sourceApplication=shunde_trip&dlat=22.8406&dlon=113.2618&dname=顺德清晖园&dev=0&t=0";
+    } else if (isAndroid) {
+      appScheme = "androidamap://route?sourceApplication=shunde_trip&dlat=22.8406&dlon=113.2618&dname=顺德清晖园&dev=0&m=0";
+    } else {
+      window.open(webRoute, "_blank");
+      return;
+    }
+
+    const startTime = Date.now();
+    window.location.href = appScheme;
+    setTimeout(() => {
+      if (Date.now() - startTime < 2000) { window.location.href = webRoute; }
+    }, 1500);
+  }
+
+  // 3. 待办事项 & 打卡清单 交互与 LocalStorage 持久化
+  function toggleItem(el, key) {
+    el.classList.toggle("completed");
+    localStorage.setItem(key, el.classList.contains("completed"));
+  }
+
+  function toggleTag(el, key) {
+    el.classList.toggle("completed");
+    localStorage.setItem(key, el.classList.contains("completed"));
+  }
+
+  // 4. 交通车次/航班 在线编辑与保存
+  let isEditing = false;
+  function toggleEditTransport() {
+    const btn = document.getElementById("edit-trans-btn");
+    const fields = [1, 2, 3, 4].map(i => document.getElementById(`trans-${i}`));
+
+    if (!isEditing) {
+      // 开启编辑模式
+      fields.forEach(f => f.setAttribute("contenteditable", "true"));
+      fields[0].focus();
+      btn.textContent = "💾 保存修改";
+      btn.style.background = "#2e7d5b";
+      btn.style.color = "#fff";
+      isEditing = true;
+    } else {
+      // 保存编辑结果
+      fields.forEach((f, index) => {
+        f.setAttribute("contenteditable", "false");
+        localStorage.setItem(`trans-${index + 1}`, f.textContent);
+      });
+      btn.textContent = "✏️ 编辑班次";
+      btn.style.background = "#f3e2d5";
+      btn.style.color = "#8a4b2f";
+      isEditing = false;
+    }
+  }
+
+  // 初始化加载保存的状态
+  window.onload = function() {
+    // 还原待办清单
+    document.querySelectorAll("#todo-list li").forEach((el, index) => {
+      const saved = localStorage.getItem(`todo-${index + 1}`);
+      if (saved === "true") el.classList.add("completed");
+    });
+
+    // 还原打卡清单
+    document.querySelectorAll("#food-list .interactive-tag").forEach((el, index) => {
+      const saved = localStorage.getItem(`food-${index + 1}`);
+      if (saved === "true") el.classList.add("completed");
+    });
+
+    // 还原交通车次
+    [1, 2, 3, 4].forEach(i => {
+      const saved = localStorage.getItem(`trans-${i}`);
+      if (saved) document.getElementById(`trans-${i}`).textContent = saved;
+    });
+  };
 </script>
 </body>
 </html>
