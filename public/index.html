@@ -5,90 +5,272 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>顺德吃货团 · 4 天 3 晚</title>
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; } 
-body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #faf6f0; color: #333; line-height: 1.7; } 
-.wrap { max-width: 680px; margin: 0 auto; padding: 16px; } 
-header { text-align: center; padding: 24px 0 12px; } 
-header h1 { font-size: 26px; color: #b5462a; } 
-header p { color: #888; font-size: 14px; margin-top: 6px; } 
+  :root {
+    --bg-color: #f7f8fa;
+    --card-bg: #ffffff;
+    --primary: #e64a19;
+    --primary-light: #fbe9e7;
+    --secondary: #2e7d32;
+    --secondary-light: #e8f5e9;
+    --text-main: #2c3e50;
+    --text-muted: #7f8c8d;
+    --border-color: #f0f0f0;
+    --radius-lg: 16px;
+    --radius-md: 10px;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  }
 
-.countdown { background: #b5462a; color: #fff; border-radius: 14px; text-align: center; padding: 18px; margin: 16px 0; } 
-.countdown .num { font-size: 32px; font-weight: bold; } 
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg-color);
+    color: var(--text-main);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 16px; }
 
-.card { background: #fff; border-radius: 14px; padding: 18px; margin: 14px 0; box-shadow: 0 2px 8px rgba(0,0,0,.06); } 
-.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-.card h2 { font-size: 18px; color: #b5462a; margin: 0; } 
+  /* Header */
+  header { text-align: center; padding: 24px 0 16px; }
+  header h1 { font-size: 24px; font-weight: 700; color: var(--primary); letter-spacing: -0.5px; }
+  header p { color: var(--text-muted); font-size: 13px; margin-top: 4px; }
 
-.btn-action { background: #f3e2d5; color: #8a4b2f; border: none; padding: 4px 10px; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: bold; }
-.btn-action:hover { background: #e5cdbd; }
+  /* 倒计时 */
+  .countdown {
+    background: linear-gradient(135deg, #ff7043, #d84315);
+    color: #fff;
+    border-radius: var(--radius-lg);
+    text-align: center;
+    padding: 20px;
+    margin: 16px 0;
+    box-shadow: 0 6px 16px rgba(216, 67, 21, 0.25);
+  }
+  .countdown .label { font-size: 13px; opacity: 0.9; text-transform: uppercase; letter-spacing: 1px; }
+  .countdown .num { font-size: 32px; font-weight: 800; margin-top: 2px; }
 
-/* 交互列表样式 */
-.interactive-list { list-style: none; padding-left: 0; margin-bottom: 10px; }
-.interactive-list li { padding: 8px 10px; margin: 6px 0; background: #faf6f0; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; user-select: none; }
-.interactive-list li .text { cursor: pointer; flex: 1; }
-.interactive-list li .text::before { content: "☐ "; font-weight: bold; color: #b5462a; margin-right: 6px; }
-.interactive-list li.completed .text { color: #aaa; text-decoration: line-through; }
-.interactive-list li.completed .text::before { content: "☑ "; color: #2e7d5b; }
-.del-btn { color: #ccc; cursor: pointer; font-size: 14px; padding: 0 6px; }
-.del-btn:hover { color: #b5462a; }
+  /* 成员身份选择框 */
+  .member-selector {
+    background: var(--card-bg);
+    border-radius: var(--radius-lg);
+    padding: 14px 16px;
+    margin: 16px 0;
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .member-selector-title { font-size: 13px; font-weight: 600; color: var(--text-muted); }
+  .avatar-group { display: flex; gap: 8px; }
+  .avatar-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: 20px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    background: #f5f5f5;
+    transition: all 0.2s ease;
+  }
+  .avatar-item img { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; }
+  .avatar-item span { font-size: 12px; font-weight: 600; color: #555; }
+  .avatar-item.active {
+    border-color: var(--primary);
+    background: var(--primary-light);
+  }
+  .avatar-item.active span { color: var(--primary); }
 
-/* 标签交互样式 */
-.tag-container { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
-.tag-wrapper { display: inline-flex; align-items: center; background: #f3e2d5; border-radius: 20px; padding: 4px 10px; font-size: 13px; color: #8a4b2f; }
-.tag-wrapper.completed { background: #e0e0e0; color: #999; text-decoration: line-through; }
-.tag-text { cursor: pointer; }
-.tag-del { margin-left: 6px; cursor: pointer; font-size: 12px; color: #a8725b; }
+  /* 通用卡片 */
+  .card {
+    background: var(--card-bg);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    margin: 16px 0;
+    box-shadow: var(--shadow);
+  }
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .card h2 { font-size: 17px; font-weight: 700; color: var(--text-main); margin: 0; display: flex; align-items: center; gap: 6px; }
 
-/* 新增输入框样式 */
-.add-box { display: flex; gap: 6px; margin-top: 10px; }
-.add-box input { flex: 1; padding: 6px 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 13px; outline: none; }
-.add-box button { background: #b5462a; color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-size: 13px; cursor: pointer; }
+  .btn-action {
+    background: var(--primary-light);
+    color: var(--primary);
+    border: none;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-action:hover { background: #ffccbc; }
 
-/* 交通卡片 */
-.flight-list { display: flex; flex-direction: column; gap: 8px; }
-.flight { background: #fdf1e7; border-radius: 10px; padding: 10px 14px; font-size: 14px; display: flex; justify-content: space-between; align-items: center; }
-.flight-code { font-weight: bold; color: #b5462a; outline: none; padding: 2px 4px; border-radius: 4px; }
-.flight-code[contenteditable="true"] { background: #fff; border: 1px dashed #b5462a; }
+  /* 带有头像信息的列表项 */
+  .interactive-list { list-style: none; padding: 0; margin-bottom: 12px; }
+  .interactive-list li {
+    padding: 10px 12px;
+    margin: 8px 0;
+    background: #f9f9fb;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .interactive-list li .left-part { display: flex; align-items: center; gap: 8px; flex: 1; cursor: pointer; }
+  .interactive-list li .text { font-size: 14px; }
+  .interactive-list li .text::before { content: "☐ "; font-weight: bold; color: var(--primary); }
+  .interactive-list li.completed .text { color: var(--text-muted); text-decoration: line-through; }
+  .interactive-list li.completed .text::before { content: "☑ "; color: var(--secondary); }
 
-/* 意见留言板 */
-.feedback-section { margin-top: 12px; padding-top: 10px; border-top: 1px dashed #eee; }
-.feedback-list { list-style: none; padding: 0; font-size: 13px; color: #555; }
-.feedback-list li { background: #fbf8f3; padding: 6px 10px; border-radius: 6px; margin: 4px 0; word-break: break-all; }
+  /* 用户标记 (头像+名字) */
+  .user-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #fff;
+    padding: 2px 6px;
+    border-radius: 12px;
+    border: 1px solid #eee;
+    font-size: 11px;
+    color: var(--text-muted);
+    flex-shrink: 0;
+  }
+  .user-badge img { width: 16px; height: 16px; border-radius: 50%; }
 
-/* 小红书收藏卡片 */
-.xhs-list { list-style: none; padding: 0; }
-.xhs-item { display: flex; justify-content: space-between; align-items: center; background: #fff5f5; border: 1px solid #ffe3e3; padding: 8px 12px; border-radius: 8px; margin: 6px 0; }
-.xhs-item a { color: #ff2442; text-decoration: none; font-size: 14px; font-weight: bold; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  /* 标签交互样式 */
+  .tag-container { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+  .tag-wrapper {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #f0f4f8;
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-size: 13px;
+    color: var(--text-main);
+  }
+  .tag-wrapper.completed { background: #e0e0e0; color: #888; text-decoration: line-through; }
+  .tag-text { cursor: pointer; }
 
-.map-preview { width: 100%; height: 200px; border-radius: 10px; border: 0; margin-top: 10px; }
-.nav-btn { display: inline-block; background: #2e7d5b; color: #fff; text-decoration: none; font-size: 12px; border-radius: 6px; padding: 2px 10px; margin-left: 6px; white-space: nowrap; cursor: pointer; } 
-table { width: 100%; border-collapse: collapse; font-size: 14px; } 
-th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid #eee; } 
-th { color: #b5462a; } 
-ul { padding-left: 20px; }
-li { margin: 6px 0; }
-footer { text-align: center; color: #aaa; font-size: 12px; padding: 20px 0; } 
-</style> 
-</head> 
-<body> 
-<div class="wrap"> 
-<header> 
-  <h1>🥢 顺德吃货团 · 4 天 3 晚</h1> 
-  <p>2026.11.06 – 11.09 · 广州 & 顺德 · 4 人成行</p> 
+  /* 新增输入框样式 */
+  .add-box { display: flex; gap: 8px; margin-top: 12px; }
+  .add-box input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: var(--radius-md);
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .add-box input:focus { border-color: var(--primary); }
+  .add-box button {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: var(--radius-md);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  /* 交通卡片 */
+  .flight-list { display: flex; flex-direction: column; gap: 8px; }
+  .flight {
+    background: #fdf6f0;
+    border-radius: var(--radius-md);
+    padding: 10px 14px;
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .flight-code { font-weight: 700; color: var(--primary); outline: none; padding: 2px 6px; border-radius: 4px; }
+  .flight-code[contenteditable="true"] { background: #fff; border: 1px dashed var(--primary); }
+
+  /* 意见留言板 */
+  .feedback-section { margin-top: 14px; padding-top: 12px; border-top: 1px dashed #eee; }
+  .feedback-list { list-style: none; padding: 0; font-size: 13px; }
+  .feedback-list li {
+    background: #fafafa;
+    padding: 8px 12px;
+    border-radius: var(--radius-md);
+    margin: 6px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  /* 小红书收藏卡片 */
+  .xhs-list { list-style: none; padding: 0; }
+  .xhs-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff0f3;
+    border: 1px solid #ffe3e8;
+    padding: 10px 12px;
+    border-radius: var(--radius-md);
+    margin: 8px 0;
+  }
+  .xhs-item a { color: #ff2442; text-decoration: none; font-size: 13px; font-weight: 600; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  /* 地图 preview */
+  .map-preview { width: 100%; height: 200px; border-radius: var(--radius-md); border: 0; margin-top: 10px; }
+  .nav-btn {
+    display: inline-block;
+    background: var(--secondary-light);
+    color: var(--secondary);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 6px;
+    padding: 2px 8px;
+    margin-left: 6px;
+    cursor: pointer;
+  }
+  
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--border-color); }
+  th { color: var(--primary); font-weight: 700; }
+  ul { padding-left: 18px; }
+  li { margin: 6px 0; font-size: 14px; }
+  .del-btn { color: #ccc; cursor: pointer; font-size: 14px; padding: 0 4px; }
+  .del-btn:hover { color: var(--primary); }
+  footer { text-align: center; color: var(--text-muted); font-size: 12px; padding: 24px 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>🥢 顺德吃货团 · 4 天 3 晚</h1>
+  <p>2026.11.06 – 11.09 · 广州 & 顺德 · 4 人成行</p>
 </header>
 
 <div class="countdown">
-  <div>距离出发还有</div>
+  <div class="label">距离出发还有</div>
   <div class="num" id="cd">--</div>
+</div>
+
+<!-- 成员身份切换框 -->
+<div class="member-selector">
+  <div class="member-selector-title">👤 当前操作人:</div>
+  <div class="avatar-group" id="avatar-group"></div>
 </div>
 
 <!-- 路线纵览与地图卡片 -->
 <div class="card">
   <div class="card-header">
     <h2>🗺️ 行程地图路线纵览</h2>
-    <button class="btn-action" onclick="planMultiRoute()">📍 手机高德全行程规划</button>
+    <button class="btn-action" onclick="planMultiRoute()">📍 手机高德路线规划</button>
   </div>
-  <p style="font-size: 13px; color: #666;">预置广州南站 → 顺德清晖园亚朵酒店 → 逢简水乡 → 白云机场大环线。</p>
+  <p style="font-size: 12px; color: var(--text-muted);">预置广州南站 → 顺德清晖园亚朵酒店 → 逢简水乡 → 白云机场大环线。</p>
   <iframe class="map-preview" src="https://uri.amap.com/marker?markers=113.2644,23.1291,广州|113.2618,22.8406,清晖园亚朵酒店|113.2104,22.7836,逢简水乡|113.2988,23.3924,白云机场&src=shunde_trip"></iframe>
 </div>
 
@@ -131,17 +313,17 @@ footer { text-align: center; color: #aaa; font-size: 12px; padding: 20px 0; }
 
 <div class="card">
   <h2>🏨 住宿</h2>
-  <p>佛山顺德清晖园亚朵酒店 × 3 晚（11/6–11/9）
+  <p style="font-size: 14px;">佛山顺德清晖园亚朵酒店 × 3 晚（11/6–11/9）
   <a class="nav-btn" onclick="openAmap('顺德清晖园亚朵酒店')">📍 导航</a></p>
 </div>
 
-<!-- 📌 新增：小红书灵感与收藏卡片 -->
+<!-- 小红书灵感与收藏卡片 -->
 <div class="card">
   <h2>📌 小红书攻略 & 灵感收藏</h2>
-  <p style="font-size: 12px; color: #888; margin-bottom: 8px;">粘贴小红书笔记链接或打卡灵感，方便大家随时查阅：</p>
+  <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">粘贴小红书笔记链接或打卡灵感，方便大家查阅：</p>
   <ul class="xhs-list" id="xhs-list"></ul>
   <div class="add-box">
-    <input type="text" id="xhs-title-input" placeholder="笔记标题/景点美食（如：民信双皮奶隐藏吃法）">
+    <input type="text" id="xhs-title-input" placeholder="笔记标题/景点美食">
     <input type="text" id="xhs-url-input" placeholder="小红书链接 (https://...)">
     <button onclick="addXhsLink()">添加</button>
   </div>
@@ -156,7 +338,7 @@ footer { text-align: center; color: #aaa; font-size: 12px; padding: 20px 0; }
     <li>夜宵四人会合：毋米粥 / 牛乳糖水 <a class="nav-btn" onclick="openAmap('顺德大良华盖路步行街')">📍 华盖路</a></li>
   </ul>
   <div class="feedback-section">
-    <p style="font-size: 12px; font-weight: bold; color: #b5462a;">💬 Day 1 调整建议 / 想法：</p>
+    <p style="font-size: 12px; font-weight: 700; color: var(--primary);">💬 Day 1 调整建议 / 想法：</p>
     <ul class="feedback-list" id="fb-day1"></ul>
     <div class="add-box">
       <input type="text" id="input-day1" placeholder="提出关于 Day 1 的建议...">
@@ -173,7 +355,7 @@ footer { text-align: center; color: #aaa; font-size: 12px; padding: 20px 0; }
     <li>午晚餐：炒牛奶、桑拿鱼（需订位）、双皮奶 <a class="nav-btn" onclick="openAmap('顺德民信老铺')">📍 双皮奶</a></li>
   </ul>
   <div class="feedback-section">
-    <p style="font-size: 12px; font-weight: bold; color: #b5462a;">💬 Day 2 调整建议 / 想法：</p>
+    <p style="font-size: 12px; font-weight: 700; color: var(--primary);">💬 Day 2 调整建议 / 想法：</p>
     <ul class="feedback-list" id="fb-day2"></ul>
     <div class="add-box">
       <input type="text" id="input-day2" placeholder="提出关于 Day 2 的建议...">
@@ -190,7 +372,7 @@ footer { text-align: center; color: #aaa; font-size: 12px; padding: 20px 0; }
     <li>晚上回大良夜宵收尾</li>
   </ul>
   <div class="feedback-section">
-    <p style="font-size: 12px; font-weight: bold; color: #b5462a;">💬 Day 3 调整建议 / 想法：</p>
+    <p style="font-size: 12px; font-weight: 700; color: var(--primary);">💬 Day 3 调整建议 / 想法：</p>
     <ul class="feedback-list" id="fb-day3"></ul>
     <div class="add-box">
       <input type="text" id="input-day3" placeholder="提出关于 Day 3 的建议...">
@@ -207,7 +389,7 @@ footer { text-align: center; color: #aaa; font-size: 12px; padding: 20px 0; }
     <li>18:50 CZ351 广州 → 新加坡（2人） & 广州 → 上海（2人）</li>
   </ul>
   <div class="feedback-section">
-    <p style="font-size: 12px; font-weight: bold; color: #b5462a;">💬 Day 4 调整建议 / 想法：</p>
+    <p style="font-size: 12px; font-weight: 700; color: var(--primary);">💬 Day 4 调整建议 / 想法：</p>
     <ul class="feedback-list" id="fb-day4"></ul>
     <div class="add-box">
       <input type="text" id="input-day4" placeholder="提出关于 Day 4 的建议...">
@@ -218,7 +400,7 @@ footer { text-align: center; color: #aaa; font-size: 12px; padding: 20px 0; }
 
 <!-- 可增减待办清单 -->
 <div class="card">
-  <h2>✅ 待办清单 (可自行加减)</h2>
+  <h2>✅ 待办清单</h2>
   <ul class="interactive-list" id="todo-list"></ul>
   <div class="add-box">
     <input type="text" id="new-todo-input" placeholder="添加新的待办事项...">
@@ -228,7 +410,7 @@ footer { text-align: center; color: #aaa; font-size: 12px; padding: 20px 0; }
 
 <!-- 可增减必吃打卡清单 -->
 <div class="card">
-  <h2>🍽 必吃打卡清单 (可自行加减)</h2>
+  <h2>🍽 必吃打卡清单</h2>
   <div class="tag-container" id="food-list"></div>
   <div class="add-box">
     <input type="text" id="new-food-input" placeholder="添加想吃的美食...">
@@ -236,10 +418,32 @@ footer { text-align: center; color: #aaa; font-size: 12px; padding: 20px 0; }
   </div>
 </div>
 
-<footer>顺德吃货团 · 数据自动实时本地保存 · 出发愉快 🎉</footer>
+<footer>顺德吃货团 · 实时记录每个人添加的精彩灵感 🎉</footer>
 </div>
 
 <script>
+  // 成员设置（使用 DiceBear 虚拟头像 API）
+  const members = [
+    { id: 'm1', name: '我', avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=Me' },
+    { id: 'm2', name: 'Fred', avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=Fred' },
+    { id: 'm3', name: '队友A', avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=Alex' },
+    { id: 'm4', name: '队友B', avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=Sarah' }
+  ];
+
+  let currentMember = members[0];
+
+  function renderMemberSelector() {
+    const container = document.getElementById("avatar-group");
+    container.innerHTML = "";
+    members.forEach(m => {
+      const div = document.createElement("div");
+      div.className = `avatar-item ${m.id === currentMember.id ? 'active' : ''}`;
+      div.onclick = () => { currentMember = m; renderMemberSelector(); };
+      div.innerHTML = `<img src="${m.avatar}" alt="${m.name}"><span>${m.name}</span>`;
+      container.appendChild(div);
+    });
+  }
+
   // 倒计时逻辑
   const target = new Date("2026-11-06T08:00:00+08:00");
   function tick() {
@@ -283,26 +487,31 @@ footer { text-align: center; color: #aaa; font-size: 12px; padding: 20px 0; }
     setTimeout(() => { if (Date.now() - startTime < 2000) window.location.href = webRoute; }, 1500);
   }
 
-  // 默认数据定义
+  // 默认数据
   const defaultTodos = [
-    { text: "上海 ⇋ 广州 机票 (2人)", done: false },
-    { text: "香港 ⇋ 广州南 高铁票 (2人)", done: false },
-    { text: "清晖园门票预约", done: false },
-    { text: "桑拿鱼餐厅订位", done: false },
-    { text: "均安蒸猪提前预订", done: false }
+    { text: "上海 ⇋ 广州 机票 (2人)", done: false, author: members[0] },
+    { text: "香港 ⇋ 广州南 高铁票 (2人)", done: false, author: members[1] },
+    { text: "清晖园门票预约", done: false, author: members[0] },
+    { text: "桑拿鱼餐厅订位", done: false, author: members[2] }
   ];
 
   const defaultFoods = [
-    { text: "双皮奶", done: false }, { text: "炒牛奶", done: false },
-    { text: "桑拿鱼", done: false }, { text: "均安蒸猪", done: false },
-    { text: "鱼饼", done: false }, { text: "毋米粥", done: false },
-    { text: "陈村粉", done: false }, { text: "伦教糕", done: false }
+    { text: "双皮奶", done: false, author: members[0] },
+    { text: "炒牛奶", done: false, author: members[1] },
+    { text: "桑拿鱼", done: false, author: members[2] },
+    { text: "均安蒸猪", done: false, author: members[3] }
   ];
 
-  let todos = JSON.parse(localStorage.getItem("shunde_todos")) || defaultTodos;
-  let foods = JSON.parse(localStorage.getItem("shunde_foods")) || defaultFoods;
-  let xhsLinks = JSON.parse(localStorage.getItem("shunde_xhs")) || [];
-  let feedbacks = JSON.parse(localStorage.getItem("shunde_feedbacks")) || { day1: [], day2: [], day3: [], day4: [] };
+  let todos = JSON.parse(localStorage.getItem("shunde_todos_v2")) || defaultTodos;
+  let foods = JSON.parse(localStorage.getItem("shunde_foods_v2")) || defaultFoods;
+  let xhsLinks = JSON.parse(localStorage.getItem("shunde_xhs_v2")) || [];
+  let feedbacks = JSON.parse(localStorage.getItem("shunde_feedbacks_v2")) || { day1: [], day2: [], day3: [], day4: [] };
+
+  // 辅助函数：渲染用户 Badge
+  function getUserBadgeHtml(author) {
+    if (!author) return '';
+    return `<span class="user-badge"><img src="${author.avatar}"> ${author.name}</span>`;
+  }
 
   // 渲染待办
   function renderTodos() {
@@ -311,17 +520,24 @@ footer { text-align: center; color: #aaa; font-size: 12px; padding: 20px 0; }
     todos.forEach((item, index) => {
       const li = document.createElement("li");
       if (item.done) li.classList.add("completed");
-      li.innerHTML = `<span class="text" onclick="toggleTodo(${index})">${item.text}</span>
-                      <span class="del-btn" onclick="deleteTodo(${index})">✕</span>`;
+      li.innerHTML = `
+        <div class="left-part" onclick="toggleTodo(${index})">
+          <span class="text">${item.text}</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:6px;">
+          ${getUserBadgeHtml(item.author)}
+          <span class="del-btn" onclick="deleteTodo(${index})">✕</span>
+        </div>
+      `;
       list.appendChild(li);
     });
-    localStorage.setItem("shunde_todos", JSON.stringify(todos));
+    localStorage.setItem("shunde_todos_v2", JSON.stringify(todos));
   }
 
   function addTodo() {
     const input = document.getElementById("new-todo-input");
     if (input.value.trim()) {
-      todos.push({ text: input.value.trim(), done: false });
+      todos.push({ text: input.value.trim(), done: false, author: currentMember });
       input.value = "";
       renderTodos();
     }
@@ -337,17 +553,20 @@ footer { text-align: center; color: #aaa; font-size: 12px; padding: 20px 0; }
     foods.forEach((item, index) => {
       const div = document.createElement("div");
       div.className = `tag-wrapper ${item.done ? 'completed' : ''}`;
-      div.innerHTML = `<span class="tag-text" onclick="toggleFood(${index})">${item.text}</span>
-                       <span class="tag-del" onclick="deleteFood(${index})">✕</span>`;
+      div.innerHTML = `
+        <span class="tag-text" onclick="toggleFood(${index})">${item.text}</span>
+        ${getUserBadgeHtml(item.author)}
+        <span class="del-btn" onclick="deleteFood(${index})">✕</span>
+      `;
       container.appendChild(div);
     });
-    localStorage.setItem("shunde_foods", JSON.stringify(foods));
+    localStorage.setItem("shunde_foods_v2", JSON.stringify(foods));
   }
 
   function addFood() {
     const input = document.getElementById("new-food-input");
     if (input.value.trim()) {
-      foods.push({ text: input.value.trim(), done: false });
+      foods.push({ text: input.value.trim(), done: false, author: currentMember });
       input.value = "";
       renderFoods();
     }
@@ -363,18 +582,23 @@ footer { text-align: center; color: #aaa; font-size: 12px; padding: 20px 0; }
     xhsLinks.forEach((item, index) => {
       const li = document.createElement("li");
       li.className = "xhs-item";
-      li.innerHTML = `<a href="${item.url}" target="_blank">📕 ${item.title}</a>
-                      <span class="del-btn" onclick="deleteXhs(${index})">✕</span>`;
+      li.innerHTML = `
+        <a href="${item.url}" target="_blank">📕 ${item.title}</a>
+        <div style="display:flex; align-items:center; gap:6px;">
+          ${getUserBadgeHtml(item.author)}
+          <span class="del-btn" onclick="deleteXhs(${index})">✕</span>
+        </div>
+      `;
       list.appendChild(li);
     });
-    localStorage.setItem("shunde_xhs", JSON.stringify(xhsLinks));
+    localStorage.setItem("shunde_xhs_v2", JSON.stringify(xhsLinks));
   }
 
   function addXhsLink() {
     const titleInput = document.getElementById("xhs-title-input");
     const urlInput = document.getElementById("xhs-url-input");
     if (titleInput.value.trim() && urlInput.value.trim()) {
-      xhsLinks.push({ title: titleInput.value.trim(), url: urlInput.value.trim() });
+      xhsLinks.push({ title: titleInput.value.trim(), url: urlInput.value.trim(), author: currentMember });
       titleInput.value = ""; urlInput.value = "";
       renderXhs();
     }
@@ -382,25 +606,31 @@ footer { text-align: center; color: #aaa; font-size: 12px; padding: 20px 0; }
 
   function deleteXhs(index) { xhsLinks.splice(index, 1); renderXhs(); }
 
-  // 行程建议/留言
+  // 行程建议
   function renderFeedbacks() {
     ['day1', 'day2', 'day3', 'day4'].forEach(day => {
       const list = document.getElementById(`fb-${day}`);
       list.innerHTML = "";
       (feedbacks[day] || []).forEach((item, index) => {
         const li = document.createElement("li");
-        li.innerHTML = `${item} <span class="del-btn" style="float:right" onclick="deleteFeedback('${day}', ${index})">✕</span>`;
+        li.innerHTML = `
+          <span>${item.text}</span>
+          <div style="display:flex; align-items:center; gap:6px;">
+            ${getUserBadgeHtml(item.author)}
+            <span class="del-btn" onclick="deleteFeedback('${day}', ${index})">✕</span>
+          </div>
+        `;
         list.appendChild(li);
       });
     });
-    localStorage.setItem("shunde_feedbacks", JSON.stringify(feedbacks));
+    localStorage.setItem("shunde_feedbacks_v2", JSON.stringify(feedbacks));
   }
 
   function addFeedback(day) {
     const input = document.getElementById(`input-${day}`);
     if (input.value.trim()) {
       if (!feedbacks[day]) feedbacks[day] = [];
-      feedbacks[day].push(input.value.trim());
+      feedbacks[day].push({ text: input.value.trim(), author: currentMember });
       input.value = "";
       renderFeedbacks();
     }
@@ -421,7 +651,6 @@ footer { text-align: center; color: #aaa; font-size: 12px; padding: 20px 0; }
       fields.forEach(f => f.setAttribute("contenteditable", "true"));
       fields[0].focus();
       btn.textContent = "💾 保存修改";
-      btn.style.background = "#2e7d5b"; btn.style.color = "#fff";
       isEditing = true;
     } else {
       fields.forEach((f, index) => {
@@ -429,13 +658,13 @@ footer { text-align: center; color: #aaa; font-size: 12px; padding: 20px 0; }
         localStorage.setItem(`trans-${index + 1}`, f.textContent);
       });
       btn.textContent = "✏️ 编辑班次";
-      btn.style.background = "#f3e2d5"; btn.style.color = "#8a4b2f";
       isEditing = false;
     }
   }
 
-  // 初始化渲染
+  // 初始化
   window.onload = function() {
+    renderMemberSelector();
     renderTodos();
     renderFoods();
     renderXhs();
