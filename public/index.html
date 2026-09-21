@@ -386,11 +386,11 @@
 <!-- 小红书灵感与收藏卡片 -->
 <div class="card">
   <h2>📌 小红书攻略 & 灵感收藏</h2>
-  <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">粘贴小红书笔记链接或打卡灵感，方便大家查阅：</p>
+  <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">粘贴小红书笔记链接或打卡灵感，自动解析链接跳转：</p>
   <ul class="xhs-list" id="xhs-list"></ul>
   <div class="add-box">
     <input type="text" id="xhs-title-input" placeholder="笔记标题/景点美食">
-    <input type="text" id="xhs-url-input" placeholder="小红书链接 (https://...)">
+    <input type="text" id="xhs-url-input" placeholder="小红书分享短链/复制整段文本均可">
     <button onclick="addXhsLink()">添加</button>
   </div>
 </div>
@@ -576,7 +576,6 @@
   let daySchedules = JSON.parse(localStorage.getItem("shunde_schedules_v1")) || defaultDaySchedules;
   let dayEditingState = { day1: false, day2: false, day3: false, day4: false };
 
-  // 渲染每日行程
   function renderDaySchedules() {
     ['day1', 'day2', 'day3', 'day4'].forEach(day => {
       const list = document.getElementById(`list-${day}`);
@@ -591,7 +590,6 @@
             <span class="del-btn" onclick="removeDayItem('${day}', ${idx})">✕</span>
           `;
         } else {
-          // 渲染地点和导航按钮
           let formattedText = itemText.replace(/\[(.*?)\]/g, (match, p1) => {
             return `<a class="nav-btn" onclick="openAmap('${p1}')">📍 ${p1}</a>`;
           });
@@ -616,7 +614,6 @@
       dayEditingState[day] = true;
       btn.textContent = "💾 保存行程";
     } else {
-      // 保存更改
       const newItems = [];
       daySchedules[day].forEach((_, idx) => {
         const input = document.getElementById(`edit-in-${day}-${idx}`);
@@ -641,7 +638,7 @@
     renderDaySchedules();
   }
 
-  // 🤖 AI 智能行程规划算法
+  // AI 智能行程规划
   function runAiPlanner() {
     const rawInput = document.getElementById("ai-input").value.trim();
     if (!rawInput) { alert("请先输入大家想去的地方或美食哦！"); return; }
@@ -651,7 +648,6 @@
 
     const items = rawInput.split(/[,，\n\s]+/).filter(x => x.length > 0);
 
-    // AI 区域归类规则
     let result = {
       day1: ["上海/香港团队抵达会合", "在大良老街吃夜宵与小吃"],
       day2: ["大良老城打卡 & 顺峰山周边"],
@@ -678,12 +674,10 @@
     }, 600);
   }
 
-  // 默认待办与美食数据
+  // 待办数据：精确指定 Kelly 与 Shirley，其余不预设
   const defaultTodos = [
-    { text: "上海 ⇋ 广州 机票 (2人)", done: false, author: members[0] },
-    { text: "香港 ⇋ 广州南 高铁票 (2人)", done: false, author: members[1] },
-    { text: "清晖园门票预约", done: false, author: members[2] },
-    { text: "桑拿鱼餐厅提前订位", done: false, author: members[3] }
+    { text: "上海 ⇋ 广州 机票 (2人)", done: false, author: members[0] }, // Kelly
+    { text: "香港 ⇋ 广州南 高铁票 (2人)", done: false, author: members[2] } // Shirley
   ];
 
   const defaultFoods = [
@@ -693,7 +687,7 @@
     { text: "均安蒸猪", done: false, author: members[3] }
   ];
 
-  let todos = JSON.parse(localStorage.getItem("shunde_todos_v3")) || defaultTodos;
+  let todos = JSON.parse(localStorage.getItem("shunde_todos_v4")) || defaultTodos;
   let foods = JSON.parse(localStorage.getItem("shunde_foods_v3")) || defaultFoods;
   let xhsLinks = JSON.parse(localStorage.getItem("shunde_xhs_v3")) || [];
   let feedbacks = JSON.parse(localStorage.getItem("shunde_feedbacks_v3")) || { day1: [], day2: [], day3: [], day4: [] };
@@ -720,7 +714,7 @@
       `;
       list.appendChild(li);
     });
-    localStorage.setItem("shunde_todos_v3", JSON.stringify(todos));
+    localStorage.setItem("shunde_todos_v4", JSON.stringify(todos));
   }
 
   function addTodo() {
@@ -763,6 +757,17 @@
   function toggleFood(index) { foods[index].done = !foods[index].done; renderFoods(); }
   function deleteFood(index) { foods.splice(index, 1); renderFoods(); }
 
+  function extractUrl(text) {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const match = text.match(urlRegex);
+    if (match && match.length > 0) return match[0];
+    if (text.includes("xhslink.com") || text.includes("xiaohongshu.com")) {
+      return "https://" + text.replace(/^[a-zA-Z]+:\/\//, "");
+    }
+    if (text.startsWith("http://") || text.startsWith("https://")) return text;
+    return "https://" + text;
+  }
+
   function renderXhs() {
     const list = document.getElementById("xhs-list");
     list.innerHTML = "";
@@ -770,7 +775,7 @@
       const li = document.createElement("li");
       li.className = "xhs-item";
       li.innerHTML = `
-        <a href="${item.url}" target="_blank">📕 ${item.title}</a>
+        <a href="${item.url}" target="_blank" rel="noopener noreferrer">📕 ${item.title}</a>
         <div style="display:flex; align-items:center; gap:6px;">
           ${getUserBadgeHtml(item.author)}
           <span class="del-btn" onclick="deleteXhs(${index})">✕</span>
@@ -784,10 +789,17 @@
   function addXhsLink() {
     const titleInput = document.getElementById("xhs-title-input");
     const urlInput = document.getElementById("xhs-url-input");
-    if (titleInput.value.trim() && urlInput.value.trim()) {
-      xhsLinks.push({ title: titleInput.value.trim(), url: urlInput.value.trim(), author: currentMember });
+    let rawTitle = titleInput.value.trim();
+    let rawUrl = urlInput.value.trim();
+
+    if (rawUrl) {
+      let cleanUrl = extractUrl(rawUrl);
+      if (!rawTitle) rawTitle = "小红书攻略灵感";
+      xhsLinks.push({ title: rawTitle, url: cleanUrl, author: currentMember });
       titleInput.value = ""; urlInput.value = "";
       renderXhs();
+    } else {
+      alert("请填写链接或小红书分享文本哦！");
     }
   }
 
