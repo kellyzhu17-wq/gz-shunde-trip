@@ -156,10 +156,36 @@
     color: #fff;
     padding: 8px 14px;
     border-radius: 20px;
-    text-decoration: none;
+    border: none;
     font-size: 12px;
     font-weight: 700;
+    cursor: pointer;
     white-space: nowrap;
+  }
+
+  /* 弹窗样式 */
+  .modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+  }
+  .modal-card {
+    background: #fff;
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    width: 85%;
+    max-width: 340px;
+    text-align: center;
+  }
+  .modal-card h3 { font-size: 16px; color: #2e7d32; margin-bottom: 8px; }
+  .modal-card p { font-size: 13px; color: #666; margin-bottom: 12px; line-height: 1.5; }
+  .modal-btn {
+    background: #2e7d32; color: #fff; border: none;
+    padding: 8px 16px; border-radius: 20px; font-size: 13px; cursor: pointer;
   }
 
   /* AI 助手专区 */
@@ -297,7 +323,7 @@
     margin-right: 8px;
   }
 
-  /* 交通卡片 */
+  /* 交通卡片样式 */
   .flight-list { display: flex; flex-direction: column; gap: 8px; }
   .flight {
     background: #fdf6f0;
@@ -308,8 +334,18 @@
     justify-content: space-between;
     align-items: center;
   }
-  .flight-code { font-weight: 700; color: var(--primary); outline: none; padding: 2px 6px; border-radius: 4px; }
-  .flight-code[contenteditable="true"] { background: #fff; border: 1px dashed var(--primary); }
+  .flight-info-group { display: flex; flex-direction: column; gap: 2px; flex: 1; }
+  .flight-desc { font-weight: 600; color: var(--text-main); }
+  .flight-edit-input {
+    border: 1px dashed var(--primary);
+    background: #fff;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    width: 90%;
+    outline: none;
+  }
+  .flight-code { font-weight: 700; color: var(--primary); font-size: 13px; }
 
   /* 意见留言板 */
   .feedback-section { margin-top: 14px; padding-top: 12px; border-top: 1px dashed #eee; }
@@ -382,7 +418,7 @@
   <div class="avatar-group" id="avatar-group"></div>
 </div>
 
-<!-- 💰 百事分账（百事AA记账）微信小程序接入 -->
+<!-- 💰 百事分账（百事AA记账）入口卡片 -->
 <div class="card">
   <h2>💰 团费分账 (百事AA记账)</h2>
   <div class="aa-box">
@@ -390,7 +426,16 @@
       <div style="font-size: 13px; font-weight: 700; color: #1b5e20;">顺德吃货团 AA 账本</div>
       <div style="font-size: 11px; color: #388e3c; margin-top: 2px;">记账/平摊/垫付/一键结算 (微信小程序)</div>
     </div>
-    <a href="weixin://dl/business/?t=bestrie_aa" class="aa-btn" onclick="openBestrieAA(event)">📲 打开百事分账</a>
+    <button class="aa-btn" onclick="showAaModal()">📲 开启分账</button>
+  </div>
+</div>
+
+<!-- 分账弹窗说明 -->
+<div class="modal-overlay" id="aa-modal">
+  <div class="modal-card">
+    <h3>📱 开启百事 AA 分账账本</h3>
+    <p>微信出于安全策略限制，网页无法直接跳转外部小程序。<br><br><b>操作方式：</b><br>1. 打开微信顶部搜索栏搜索：<br><b style="color:#2e7d32;">百事AA记账</b><br>2. 点击新建或加入“顺德吃货团”账本即可全员协同记账！</p>
+    <button class="modal-btn" onclick="copyAndCloseModal()">复制名称并关闭</button>
   </div>
 </div>
 
@@ -432,30 +477,13 @@
   </table>
 </div>
 
-<!-- 交通信息卡片 -->
+<!-- 交通信息卡片（支持时间和班次在线编辑） -->
 <div class="card">
   <div class="card-header">
-    <h2>✈️ 交通信息</h2>
+    <h2>✈️ 交通信息与时间安排</h2>
     <button class="btn-action" id="edit-trans-btn" onclick="toggleEditTransport()">✏️ 编辑班次</button>
   </div>
-  <div class="flight-list">
-    <div class="flight">
-      <span>🛫 上海 ⇋ 广州（2人 · 11/6 去程早班机）</span>
-      <span class="flight-code" id="trans-1">待补航班号</span>
-    </div>
-    <div class="flight">
-      <span>🚄 香港 ⇋ 广州南（2人 · 11/6 去程晚间）</span>
-      <span class="flight-code" id="trans-2">待补车次</span>
-    </div>
-    <div class="flight">
-      <span>🛫 广州 → 新加坡（2人 · 11/9 回程 18:50）</span>
-      <span class="flight-code" id="trans-3">CZ351 (18:50)</span>
-    </div>
-    <div class="flight">
-      <span>🛫 广州 → 上海（2人 · 11/9 回程）</span>
-      <span class="flight-code" id="trans-4">待补航班号</span>
-    </div>
-  </div>
+  <div class="flight-list" id="flight-list-container"></div>
 </div>
 
 <div class="card">
@@ -551,7 +579,7 @@
   </div>
 </div>
 
-<!-- 可增减必吃打卡清单 -->
+<!-- 必吃打卡清单 -->
 <div class="card">
   <h2>🍽 必吃打卡清单</h2>
   <div class="tag-container" id="food-list"></div>
@@ -565,7 +593,6 @@
 </div>
 
 <script>
-  // 4位成员设置
   const members = [
     { id: 'm1', name: 'Kelly', avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=Kelly' },
     { id: 'm2', name: 'Fred', avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=Fred' },
@@ -600,15 +627,16 @@
   tick();
   setInterval(tick, 30000);
 
-  // 打开百事分账（微信小程序唤起）
-  function openBestrieAA(e) {
-    const isWeChat = /MicroMessenger/i.test(navigator.userAgent);
-    if (!isWeChat) {
-      alert("请在微信内打开或搜索微信小程序【百事AA记账】进入分账账本哦！");
-    }
+  function showAaModal() {
+    document.getElementById("aa-modal").style.display = "flex";
   }
 
-  // 高德导航
+  function copyAndCloseModal() {
+    navigator.clipboard.writeText("百事AA记账");
+    alert("已复制「百事AA记账」，请打开微信搜索使用！");
+    document.getElementById("aa-modal").style.display = "none";
+  }
+
   function openAmap(keyword) {
     const encodedKeyword = encodeURIComponent(keyword);
     const isiOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
@@ -648,10 +676,15 @@
         "18:50 CZ351 广州 → 新加坡（2人） & 广州 → 上海（2人）"
       ]
     },
-    transports: ["待补航班号", "待补车次", "CZ351 (18:50)", "待补航班号"],
+    transports: [
+      { route: "🛫 上海 ⇋ 广州（2人 · 11/6 去程）", detail: "待补航班号 (时间待定)" },
+      { route: "🚄 香港 ⇋ 广州南（2人 · 11/6 去程）", detail: "待补车次 (时间待定)" },
+      { route: "🛫 广州 → 新加坡（2人 · 11/9 回程）", detail: "CZ351 (18:50 起飞)" },
+      { route: "🛫 广州 → 上海（2人 · 11/9 回程）", detail: "待补航班号 (时间待定)" }
+    ],
     todos: [
-      { text: "上海 ⇋ 广州 机票 (2人)", done: false, author: members[0] }, // Kelly
-      { text: "香港 ⇋ 广州南 高铁票 (2人)", done: false, author: members[2] }, // Shirley
+      { text: "上海 ⇋ 广州 机票 (2人)", done: false, author: members[0] },
+      { text: "香港 ⇋ 广州南 高铁票 (2人)", done: false, author: members[2] },
       { text: "清晖园门票提前预约", done: false, author: members[0] },
       { text: "桑拿鱼餐厅提前订位", done: false, author: members[1] },
       { text: "均安蒸猪提前预订", done: false, author: members[3] }
@@ -670,11 +703,11 @@
     feedbacks: { day1: [], day2: [], day3: [], day4: [] }
   };
 
-  let globalState = JSON.parse(localStorage.getItem("shunde_trip_master_v6")) || defaultGlobalState;
+  let globalState = JSON.parse(localStorage.getItem("shunde_trip_master_v8")) || defaultGlobalState;
   let dayEditingState = { day1: false, day2: false, day3: false, day4: false };
 
   function syncToCloud() {
-    localStorage.setItem("shunde_trip_master_v6", JSON.stringify(globalState));
+    localStorage.setItem("shunde_trip_master_v8", JSON.stringify(globalState));
   }
 
   function renderAll() {
@@ -774,7 +807,6 @@
     renderDaySchedules();
   }
 
-  // 🤖 升级版 AI 规划引擎：支持识别 Day1 / Day2 / 第X天
   function runAiPlanner() {
     const rawInput = document.getElementById("ai-input").value.trim();
     if (!rawInput) { alert("请先输入大家想去的地方或包含 Day1/Day2 的规划建议哦！"); return; }
@@ -782,14 +814,7 @@
     const status = document.getElementById("ai-status");
     status.textContent = "🤖 AI 正在智能解析天数并规划归类...";
 
-    let newSchedules = {
-      day1: [],
-      day2: [],
-      day3: [],
-      day4: []
-    };
-
-    // 按分号、换行或句号拆分语句
+    let newSchedules = { day1: [], day2: [], day3: [], day4: [] };
     const sentences = rawInput.split(/[;；\n]+/).filter(x => x.trim().length > 0);
 
     sentences.forEach(sentence => {
@@ -799,13 +824,11 @@
       else if (/day\s*3|第三天|11\/8|11月8/i.test(sentence)) targetDay = "day3";
       else if (/day\s*4|第四天|11\/9|11月9/i.test(sentence)) targetDay = "day4";
 
-      // 提取核心景点与标记
       let cleanContent = sentence.replace(/day\s*[1-4]|第一天|第二天|第三天|第四天/gi, "").trim();
 
       if (targetDay) {
         newSchedules[targetDay].push(`${cleanContent} [${cleanContent.slice(0,6)}]`);
       } else {
-        // 如果没有显式指定天数，走地理算法判断
         if (cleanContent.includes("水乡") || cleanContent.includes("均安") || cleanContent.includes("蒸猪")) {
           newSchedules.day3.push(`${cleanContent} [${cleanContent}]`);
         } else if (cleanContent.includes("陈村") || cleanContent.includes("手信") || cleanContent.includes("返程")) {
@@ -818,7 +841,6 @@
       }
     });
 
-    // 补齐未提到天数的默认兜底
     if(newSchedules.day1.length === 0) newSchedules.day1 = globalState.daySchedules.day1;
     if(newSchedules.day2.length === 0) newSchedules.day2 = globalState.daySchedules.day2;
     if(newSchedules.day3.length === 0) newSchedules.day3 = globalState.daySchedules.day3;
@@ -832,32 +854,50 @@
     }, 600);
   }
 
+  // 交通班次及时间渲染与编辑
+  let isEditingTrans = false;
   function renderTransports() {
-    [1, 2, 3, 4].forEach(i => {
-      if (globalState.transports && globalState.transports[i - 1]) {
-        document.getElementById(`trans-${i}`).textContent = globalState.transports[i - 1];
+    const container = document.getElementById("flight-list-container");
+    container.innerHTML = "";
+    (globalState.transports || []).forEach((item, index) => {
+      const div = document.createElement("div");
+      div.className = "flight";
+      if (isEditingTrans) {
+        div.innerHTML = `
+          <div class="flight-info-group">
+            <span class="flight-desc">${item.route}</span>
+            <input type="text" class="flight-edit-input" id="trans-input-${index}" value="${item.detail}">
+          </div>
+        `;
+      } else {
+        div.innerHTML = `
+          <div class="flight-info-group">
+            <span class="flight-desc">${item.route}</span>
+            <span class="flight-code">${item.detail}</span>
+          </div>
+        `;
       }
+      container.appendChild(div);
     });
   }
 
-  let isEditingTrans = false;
   function toggleEditTransport() {
     const btn = document.getElementById("edit-trans-btn");
-    const fields = [1, 2, 3, 4].map(i => document.getElementById(`trans-${i}`));
-
     if (!isEditingTrans) {
-      fields.forEach(f => f.setAttribute("contenteditable", "true"));
-      fields[0].focus();
-      btn.textContent = "💾 保存修改";
       isEditingTrans = true;
+      btn.textContent = "💾 保存修改";
+      renderTransports();
     } else {
-      fields.forEach((f, index) => {
-        f.setAttribute("contenteditable", "false");
-        globalState.transports[index] = f.textContent;
+      globalState.transports.forEach((item, index) => {
+        const input = document.getElementById(`trans-input-${index}`);
+        if (input && input.value.trim()) {
+          item.detail = input.value.trim();
+        }
       });
-      btn.textContent = "✏️ 编辑班次";
       isEditingTrans = false;
+      btn.textContent = "✏️ 编辑班次";
       syncToCloud();
+      renderTransports();
     }
   }
 
