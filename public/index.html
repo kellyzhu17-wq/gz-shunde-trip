@@ -1,81 +1,90 @@
-'''text
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>顺德吃货团 · 4 天 3 晚</title>
+<style>
 
-'''
-'''text
+{ margin: 0; padding: 0; box-sizing: border-box; } body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #faf6f0; color: #333; line-height: 1.7; } .wrap { max-width: 680px; margin: 0 auto; padding: 16px; } header { text-align: center; padding: 28px 0 12px; } header h1 { font-size: 26px; color: #b5462a; } header p { color: #888; font-size: 14px; margin-top: 6px; } .countdown { background: #b5462a; color: #fff; border-radius: 14px; text-align: center; padding: 18px; margin: 16px 0; } .countdown .num { font-size: 34px; font-weight: bold; } .card { background: #fff; border-radius: 14px; padding: 18px; margin: 14px 0; box-shadow: 0 2px 8px rgba(0,0,0,.06); } .card h2 { font-size: 18px; color: #b5462a; margin-bottom: 8px; } .tag { display: inline-block; background: #f3e2d5; color: #8a4b2f; border-radius: 6px; font-size: 12px; padding: 2px 8px; margin: 2px 4px 2px 0; } ul { padding-left: 20px; } li { margin: 6px 0; } a { color: #b5462a; } .todo li { list-style: "☐ "; } footer { text-align: center; color: #aaa; font-size: 12px; padding: 20px 0; } </style> </head> <body> <div class="wrap"> <header> <h1>🥢 顺德吃货团 · 4 天 3 晚</h1> <p>2026.11.06 – 11.09 · 广州 & 顺德 · 4 人成行</p> </header>
+<div class="countdown">
+  <div>距离出发还有</div>
+  <div class="num" id="cd">--</div>
+</div>
 
-🥢 顺德吃货团 · 4 天 3 晚
-2026.11.06 – 11.09 · 广州 & 顺德 · 4 人成行
+<div class="card">
+  <h2>🏨 住宿</h2>
+  <p>佛山顺德清晖园亚朵酒店 × 3 晚（11/6–11/9）</p>
+  <p><a href="https://uri.amap.com/search?keyword=顺德清晖园亚朵酒店">📍 高德导航</a></p>
+</div>
 
---
-距离出发
-路线总览
-广州抵达
-顺德大良
-逢简·均安
-白云机场
-住：清晖园亚朵酒店 ×3 晚
-Day 1 · 11/6 周五 · 抵达会合
-上午
-上海组 2 人飞抵白云机场（航班待补），广州市区自由活动
-机票未订，出票后补时间
-下午
-上海组南下顺德，酒店办理入住 · 导航酒店
-晚上
-香港组 2 人高铁抵广州南（车票未订），转乘至顺德
-夜宵
-四人大良会合，夜宵开吃 · 导航华盖路
-Day 2 · 11/7 周六 · 大良老城
-08:30
-华盖路早茶（虾饺、伦教糕、双皮奶）
-10:30
-清晖园游览 · 导航
-⚠️ 门票需提前预约，尚未预约
-13:00
-午餐：炒牛奶、菊花水蛇羹
-15:00
-大良老城闲逛、金榜牛乳、双皮奶老铺
-18:30
-晚餐：桑拿鱼 · ⚠️ 周六人多，需提前订位/排队
-Day 3 · 11/8 周日 · 逢简水乡 & 均安
-09:00
-出发逢简水乡 · 导航
-12:00
-均安镇午餐：均安蒸猪、均安鱼饼 · 导航
-⚠️ 均安蒸猪需提前预订
-15:00
-水乡摇船、烧鹅、煎堆下午茶
-18:30
-返回大良，晚餐清淡收尾（粥底火锅）
-Day 4 · 11/9 周一 · 陈村早茶 & 返程
-08:30
-陈村早茶 + 采购手信（陈村粉、鱼皮角、双皮奶伴手礼）· 导航
-14:00
-退房出发前往白云机场
-15:30
-抵达白云机场 T2 · 导航
-18:50
-✈️ CZ351 广州 → 新加坡（2 人）
-傍晚
-上海组返程航班（待订，出票后补充）
-🍜 必吃打卡清单
-☐ 双皮奶（金榜牛乳搭配）
-☐ 炒牛奶 / 大良炸牛奶
-☐ 桑拿鱼
-☐ 均安蒸猪
-☐ 均安鱼饼
-☐ 陈村粉
-☐ 伦教糕
-☐ 菊花水蛇羹
-☐ 粥底火锅
-☐ 煲仔饭夜宵
-📋 待办事项
-☐ 订：上海 ⇄ 广州 往返机票（2 人）
-☐ 订：香港 ⇄ 广州南 高铁票（2 人）
-☐ 约：清晖园门票（11/7 上午场）
-☐ 订：桑拿鱼餐厅（周六晚）
-☐ 订：均安蒸猪（11/8 午）
-顺德吃货团手册 · 出票后记得回来更新时间 ✦
-'''
-'''text
+<div class="card">
+  <h2>Day 1 · 11/6 周五 · 抵达会合</h2>
+  <ul>
+    <li>上海二人早班机抵广州，市区小逛（待补航班号）</li>
+    <li>香港二人晚间高铁抵广州南 → 顺德大良（待补车次）</li>
+    <li>夜宵四人会合：大良毋米粥 / 牛乳糖水</li>
+  </ul>
+</div>
 
-'''
+<div class="card">
+  <h2>Day 2 · 11/7 周六 · 大良老城吃逛</h2>
+  <ul>
+    <li>早茶：华盖路老字号</li>
+    <li>上午：清晖园（记得提前预约门票）</li>
+    <li>午晚餐：炒牛奶、桑拿鱼（需订位）、双皮奶</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>Day 3 · 11/8 周日 · 逢简水乡 + 均安</h2>
+  <ul>
+    <li>上午：逢简水乡摇橹船、祠堂</li>
+    <li>午餐：均安蒸猪（需提前订）、鱼饼</li>
+    <li>晚上回大良夜宵收尾</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>Day 4 · 11/9 周一 · 陈村早茶 & 返程</h2>
+  <ul>
+    <li>陈村早茶 + 采购手信（鱼皮角、双皮奶伴手礼）</li>
+    <li>下午前往白云机场</li>
+    <li>18:50 CZ351 广州 → 新加坡（2 人）</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>✅ 待办清单</h2>
+  <ul class="todo">
+    <li>上海 ⇋ 广州 机票</li>
+    <li>香港 ⇋ 广州南 高铁票</li>
+    <li>清晖园门票预约</li>
+    <li>桑拿鱼餐厅订位</li>
+    <li>均安蒸猪提前预订</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>🍽 必吃打卡清单</h2>
+  <span class="tag">双皮奶</span><span class="tag">炒牛奶</span><span class="tag">桑拿鱼</span><span class="tag">均安蒸猪</span><span class="tag">鱼饼</span><span class="tag">毋米粥</span><span class="tag">陈村粉</span><span class="tag">伦教糕</span>
+</div>
+
+<footer>顺德吃货团 · 手册会自动更新 · 出发愉快 🎉</footer>
+</div>
+
+<script>
+  const target = new Date("2026-11-06T08:00:00+08:00");
+  function tick() {
+    const diff = target - new Date();
+    if (diff <= 0) { document.getElementById("cd").textContent = "出发啦！🎉"; return; }
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor(diff % 86400000 / 3600000);
+    const m = Math.floor(diff % 3600000 / 60000);
+    document.getElementById("cd").textContent = d + " 天 " + h + " 小时 " + m + " 分";
+  }
+  tick();
+  setInterval(tick, 30000);
+</script>
+</body>
+</html>
